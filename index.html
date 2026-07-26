@@ -382,12 +382,12 @@ const FONT_FAMILIES = {
 };
 
 const INITIAL_TEMPLATES = [
-  { id:"t1", name:"Rosé Elegance", category:"Pernikahan", price:75000, primary:"#928573", secondary:"#7a6e5d", bg:"#fdf9f6", font:"elegant", layout:"klasik", photo:null },
-  { id:"t2", name:"Zaitun Sederhana", category:"Pernikahan", price:65000, primary:"#5c6b4a", secondary:"#3f4a34", bg:"#f6f5ee", font:"elegant", layout:"minimalis", photo:null },
-  { id:"t3", name:"Kelapa Muda", category:"Akikah", price:45000, primary:"#3f7d68", secondary:"#2f5d50", bg:"#f3f8f1", font:"modern", layout:"modern", photo:null },
-  { id:"t4", name:"Balon Ceria", category:"Ulang Tahun", price:40000, primary:"#c76b84", secondary:"#5aa9e6", bg:"#fff6f2", font:"modern", layout:"modern", photo:null },
-  { id:"t5", name:"Padi Emas", category:"Khitanan", price:45000, primary:"#a97a3f", secondary:"#2f4858", bg:"#fbf6ec", font:"classic", layout:"klasik", photo:null },
-  { id:"t6", name:"Syukur Sederhana", category:"Syukuran", price:40000, primary:"#6a6a8f", secondary:"#4a4a68", bg:"#f5f4fa", font:"elegant", layout:"minimalis", photo:null },
+  { id:"t1", name:"Rosé Elegance", category:"Pernikahan", price:75000, primary:"#928573", secondary:"#7a6e5d", bg:"#fdf9f6", bgImage:null, font:"elegant", layout:"klasik", photo:null },
+  { id:"t2", name:"Zaitun Sederhana", category:"Pernikahan", price:65000, primary:"#5c6b4a", secondary:"#3f4a34", bg:"#f6f5ee", bgImage:null, font:"elegant", layout:"minimalis", photo:null },
+  { id:"t3", name:"Kelapa Muda", category:"Akikah", price:45000, primary:"#3f7d68", secondary:"#2f5d50", bg:"#f3f8f1", bgImage:null, font:"modern", layout:"modern", photo:null },
+  { id:"t4", name:"Balon Ceria", category:"Ulang Tahun", price:40000, primary:"#c76b84", secondary:"#5aa9e6", bg:"#fff6f2", bgImage:null, font:"modern", layout:"modern", photo:null },
+  { id:"t5", name:"Padi Emas", category:"Khitanan", price:45000, primary:"#a97a3f", secondary:"#2f4858", bg:"#fbf6ec", bgImage:null, font:"classic", layout:"klasik", photo:null },
+  { id:"t6", name:"Syukur Sederhana", category:"Syukuran", price:40000, primary:"#6a6a8f", secondary:"#4a4a68", bg:"#f5f4fa", bgImage:null, font:"elegant", layout:"minimalis", photo:null },
 ];
 
 function emptyContent(tpl){
@@ -413,6 +413,7 @@ function emptyContent(tpl){
     primary: tpl.primary,
     secondary: tpl.secondary,
     bg: tpl.bg,
+    bgImage: tpl.bgImage || null,
     font: tpl.font || "elegant",
     layout: tpl.layout || "klasik",
   };
@@ -553,12 +554,14 @@ function handlePhotoUpload(input){
     reader.readAsDataURL(file);
   });
 }
+
 function removePhoto(idx){
   const inv = getActiveInvite();
   inv.content.photos.splice(idx,1);
   renderPhotoThumbs();
   renderPreviewOnly();
 }
+
 function renderPhotoThumbs(){
   const inv = getActiveInvite();
   const wrap = document.getElementById("photo-thumbs");
@@ -747,7 +750,7 @@ function renderGallery(){
         const hasPhoto = !!t.photo;
         const coverStyle = hasPhoto
           ? `background-image:linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url('${t.photo}');background-size:cover;background-position:center;`
-          : `background:${t.bg};`;
+          : (t.bgImage ? `background-image:url('${t.bgImage}');background-size:cover;background-position:center;` : `background:${t.bg};`);
         const catColor = hasPhoto ? "#fff" : t.secondary;
         const nameColor = hasPhoto ? "#fff" : t.primary;
         const heartColor = hasPhoto ? "#fff" : t.secondary;
@@ -857,7 +860,14 @@ function renderEditor(){
             <label class="field"><span>Warna Utama</span><input type="color" class="in" style="height:42px" value="${c.primary}" oninput="onFieldInput('primary', this.value)"></label>
             <label class="field"><span>Warna Aksen</span><input type="color" class="in" style="height:42px" value="${c.secondary}" oninput="onFieldInput('secondary', this.value)"></label>
           </div>
-          <label class="field"><span>Font</span>
+          <label class="field"><span>Warna Latar Belakang</span><input type="color" class="in" style="height:42px" value="${c.bg}" oninput="onFieldInput('bg', this.value)"></label>
+          
+          <div style="margin-top:12px; padding:14px; border-radius:12px; background:var(--bg-subtle); border:1px solid var(--border-color); font-size:0.78rem; color:var(--text-secondary)">
+            <p style="margin-bottom:4px; font-weight:600; color:var(--text-primary)"><i class="fa-solid fa-circle-info" style="color:var(--accent-rose)"></i> Mau Menambahkan Gambar Latar Belakang (Background)?</p>
+            Fitur kustomisasi gambar latar belakang khusus hanya dikelola oleh Super Admin. Jika Anda ingin menambahkan atau mengubah gambar latar belakang per template, silakan hubungi <b>Super Admin</b>.
+          </div>
+
+          <label class="field" style="margin-top:14px"><span>Font</span>
             <select class="in" onchange="onFieldInput('font', this.value)">
               <option value="elegant" ${c.font==='elegant'?'selected':''}>Elegant Serif</option>
               <option value="modern" ${c.font==='modern'?'selected':''}>Modern Sans</option>
@@ -904,6 +914,14 @@ function renderPhonePreview(c){
     ? new Date(c.date + "T00:00:00").toLocaleDateString("id-ID", { weekday:"long", year:"numeric", month:"long", day:"numeric" })
     : "Tanggal acara";
 
+  const customBgStyle = c.bgImage 
+    ? `background-image: url('${c.bgImage}'); background-size: cover; background-position: center; background-attachment: local;` 
+    : `background:${c.bg};`;
+
+  const cardBgStyle = c.bgImage 
+    ? `background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(4px);` 
+    : `background:${c.bg};`;
+
   const personsHtml = (c.personA || c.personB) ? `
     <div class="p-persons animate-on-scroll">
       ${c.personA ? `<div class="p-person"><p class="pname cursive" style="color:${c.primary}">${esc(c.personA.split("—")[0])}</p><p class="prole">${esc(c.personA.split("—")[1]||"")}</p></div>` : ""}
@@ -930,7 +948,7 @@ function renderPhonePreview(c){
         <iframe src="https://www.google.com/maps?q=${encodeURIComponent(ev.mapsQuery)}&output=embed" loading="lazy"></iframe>
       </div>` : "";
     return `
-      <div class="event-card animate-on-scroll" style="background:${c.bg};border:1px solid ${c.secondary}33;margin-top:14px">
+      <div class="event-card animate-on-scroll" style="${cardBgStyle};border:1px solid ${c.secondary}33;margin-top:14px">
         <p class="ename cursive" style="color:${c.primary}">${esc(ev.title) || "Acara Sesi Lain"}</p>
         ${evDate ? `<p class="erow"><i class="fa-regular fa-calendar"></i> ${evDate}</p>` : ""}
         <p class="erow"><i class="fa-regular fa-clock"></i> ${esc(ev.time) || "Waktu acara"} WIB</p>
@@ -961,7 +979,7 @@ function renderPhonePreview(c){
 
   return `
   <div class="phone-frame">
-    <div class="phone-scroll" id="phone-scroll-element" style="background:${c.bg};color:#2a2a2a;font-family:${fontFamily}">
+    <div class="phone-scroll" id="phone-scroll-element" style="${customBgStyle};color:#2a2a2a;font-family:${fontFamily}">
 
       <div class="p-cover ${previewState.opened ? 'hidden-cover' : ''}" style="background-image:${bgLayer}">
         <p class="kepada">Kepada Yth. Bapak/Ibu/Saudara/i</p>
@@ -981,14 +999,14 @@ function renderPhonePreview(c){
         ${personsHtml}
       </section>
 
-      <section class="p-section" style="background:#fff">
+      <section class="p-section" style="${c.bgImage ? 'background:rgba(255,255,255,0.85);backdrop-filter:blur(4px);' : 'background:#fff'}">
         <p class="p-title cursive animate-on-scroll" style="color:${c.primary}">Hitung Mundur</p>
         <div id="countdown-boxes" class="cd-row animate-zoom" data-date="${c.date}" data-time="${c.time}" style="--primary:${c.primary}">
           ${["Hari","Jam","Menit","Detik"].map(lbl=>`<div class="cd-box" style="background:${c.primary}"><span class="num" data-cd="${lbl}">00</span><span class="lbl">${lbl}</span></div>`).join("")}
         </div>
         <p id="countdown-over" style="font-size:0.75rem;color:#8a8a8a;display:none;margin-top:8px">Acara telah berlangsung</p>
 
-        <div class="event-card animate-on-scroll" style="background:${c.bg};border:1px solid ${c.secondary}33">
+        <div class="event-card animate-on-scroll" style="${cardBgStyle};border:1px solid ${c.secondary}33">
           <p class="ename cursive" style="color:${c.primary}">${esc(c.eventTitle) || "Acara"}</p>
           <p class="erow"><i class="fa-regular fa-clock"></i> ${esc(c.time) || "Waktu acara"} WIB</p>
           <p class="erow" style="font-weight:600">${esc(c.venueName) || "Nama tempat"}</p>
@@ -998,20 +1016,20 @@ function renderPhonePreview(c){
         ${extraEventsHtml}
       </section>
 
-      <section class="p-section" style="background:${c.bg}">
+      <section class="p-section">
         <p class="p-title cursive animate-on-scroll" style="color:${c.primary}">Momen Bahagia</p>
         <p class="p-sub animate-on-scroll">Galeri Foto</p>
         ${galleryHtml}
         ${c.music ? `<p class="animate-on-scroll" style="margin-top:14px;font-size:0.72rem;opacity:0.7"><i class="fa-solid fa-music"></i> Musik latar terpasang</p>` : ""}
       </section>
 
-      <section class="p-section" style="background:#fff">
+      <section class="p-section" style="${c.bgImage ? 'background:rgba(255,255,255,0.85);backdrop-filter:blur(4px);' : 'background:#fff'}">
         <p class="p-title cursive animate-on-scroll" style="color:${c.primary}">Konfirmasi Kehadiran</p>
         <p class="p-sub animate-on-scroll">Mohon isi form di bawah ini</p>
         ${rsvpHtml}
       </section>
 
-      <section class="p-section" style="background:${c.bg}">
+      <section class="p-section">
         <p class="p-title cursive animate-on-scroll" style="color:${c.primary}">Amplop / Hadiah</p>
         <p class="p-sub animate-on-scroll">Kado Digital</p>
         ${giftHtml}
@@ -1434,7 +1452,7 @@ function resetDraftTemplate(){
     quote: "Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir.",
     photos: [], music: "",
     bankName: "", bankAccountNumber: "", bankAccountHolder: "",
-    primary: "#928573", secondary: "#7a6e5d", bg: "#fdf9f6",
+    primary: "#928573", secondary: "#7a6e5d", bg: "#fdf9f6", bgImage: null,
     font: "elegant", layout: "klasik",
   };
 }
@@ -1485,6 +1503,34 @@ function renderDraftPhotoThumb(){
   if(fileInput) fileInput.disabled = draftTemplate.photos.length >= 1;
 }
 
+/* FITUR KHUSUS SUPER ADMIN: UPLOAD BACKGROUND TEMPLATE */
+function uploadDraftBgImage(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    draftTemplate.bgImage = reader.result;
+    input.value = "";
+    renderDraftBgImageThumb();
+    renderDraftPreviewOnly();
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeDraftBgImage(){
+  draftTemplate.bgImage = null;
+  renderDraftBgImageThumb();
+  renderDraftPreviewOnly();
+}
+
+function renderDraftBgImageThumb(){
+  const wrap = document.getElementById("draft-bg-thumb");
+  if(!wrap) return;
+  wrap.innerHTML = draftTemplate.bgImage
+    ? `<div class="photo-thumb" style="width:84px;height:84px"><img src="${draftTemplate.bgImage}"><button onclick="removeDraftBgImage()">✕</button></div>`
+    : "";
+}
+
 function renderAdminTemplates(){
   ensureDraftTemplate();
   const d = draftTemplate;
@@ -1509,10 +1555,18 @@ function renderAdminTemplates(){
 
       <div class="card">
         <p class="section-title"><i class="fa-solid fa-image"></i> Foto Sampul / Hero</p>
-        <label class="field"><span>Upload gambar background (opsional)</span>
+        <label class="field"><span>Upload gambar hero (opsional)</span>
           <input id="draft-photo-input" type="file" accept="image/*" class="in" onchange="uploadDraftPhoto(this)" ${d.photos.length?'disabled':''}>
         </label>
         <div id="draft-photo-thumb" class="photo-thumbs"></div>
+      </div>
+
+      <div class="card">
+        <p class="section-title"><i class="fa-solid fa-file-image"></i> Layar Belakang (Background Kustom Admin)</p>
+        <label class="field"><span>Upload Layar Belakang Kustom Template</span>
+          <input id="draft-bg-input" type="file" accept="image/*" class="in" onchange="uploadDraftBgImage(this)">
+        </label>
+        <div id="draft-bg-thumb" class="photo-thumbs"></div>
       </div>
 
       <div class="card">
@@ -1556,7 +1610,7 @@ function renderAdminTemplates(){
       const hasPhoto = !!t.photo;
       const coverStyle = hasPhoto
         ? `background-image:linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url('${t.photo}');background-size:cover;background-position:center;`
-        : `background:${t.bg};`;
+        : (t.bgImage ? `background-image:url('${t.bgImage}');background-size:cover;background-position:center;` : `background:${t.bg};`);
       const nameColor = hasPhoto ? "#fff" : t.primary;
       return `
         <div class="tpl-mini">
@@ -1582,6 +1636,7 @@ function publishTemplate(){
     primary: draftTemplate.primary,
     secondary: draftTemplate.secondary,
     bg: draftTemplate.bg,
+    bgImage: draftTemplate.bgImage || null,
     font: draftTemplate.font,
     layout: draftTemplate.layout,
     photo: draftTemplate.photos[0] || null,
@@ -1591,13 +1646,16 @@ function publishTemplate(){
   resetDraftTemplate();
   render();
 }
+
 function removeTemplate(id){
   state.templates = state.templates.filter(t=>t.id!==id);
   render();
 }
+
 function bindAdminExtras(){
   if(state.adminTab === "templates") {
     renderDraftPhotoThumb();
+    renderDraftBgImageThumb();
     bindPhoneScrollAnimation();
   }
 }
