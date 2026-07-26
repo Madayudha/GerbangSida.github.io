@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Undangan Digital Modern & Animated</title>
+<title>Gerbang Sida - Undangan Digital Modern & Animated</title>
+
+<!-- Favicon dengan Logo Baru -->
+<link rel="icon" type="image/png" href="Gemini_Generated_Image_cvc9ancvc9ancvc9 (1).png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,37 +16,41 @@
 
 <style>
   :root {
-    --bg-main: #f8fafc;
-    --bg-card: #ffffff;
-    --bg-subtle: #f1f5f9;
-    --border-color: #e2e8f0;
-    --text-primary: #0f172a;
-    --text-secondary: #64748b;
-    --text-muted: #94a3b8;
-    --accent-rose: #f43f5e;
-    --accent-rose-hover: #e11d48;
-    --accent-emerald: #10b981;
-    --topbar-bg: rgba(255, 255, 255, 0.8);
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-    --shadow-md: 0 4px 20px -2px rgba(0,0,0,0.08);
-    --phone-frame-border: #1e293b;
+    /* Mode Terang (Light Mode) — Vibe Pantai & Segar */
+    --bg-main: #F8F9FA;
+    --bg-card: #FFFFFF;
+    --bg-subtle: #EBF1F5;
+    --border-color: #CBD5E1;
+    --text-primary: #0B1B3D;
+    --text-secondary: #334155;
+    --text-muted: #64748B;
+    --accent-rose: #5B84B1;
+    --accent-rose-hover: #4A7C59;
+    --accent-emerald: #10B981;
+    --topbar-bg: rgba(248, 249, 250, 0.88);
+    --shadow-sm: 0 1px 3px rgba(11, 27, 61, 0.08);
+    --shadow-md: 0 4px 20px -2px rgba(11, 27, 61, 0.12);
+    --phone-frame-border: #0B1B3D;
   }
 
   [data-theme="dark"] {
-    --bg-main: #0b0f17;
-    --bg-card: #151c28;
-    --bg-subtle: #1e293b;
-    --border-color: #2e3a4e;
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-    --topbar-bg: rgba(21, 28, 40, 0.8);
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-    --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.4);
-    --phone-frame-border: #334155;
+    /* Mode Gelap (Dark Mode) — Vibe Mewah & Malam */
+    --bg-main: #071126;
+    --bg-card: #0E1E3F;
+    --bg-subtle: #162952;
+    --border-color: #233966;
+    --text-primary: #E9ECEF;
+    --text-secondary: #A3B8CC;
+    --text-muted: #7E97B0;
+    --accent-rose: #D4AF37;
+    --accent-rose-hover: #B8952B;
+    --topbar-bg: rgba(7, 17, 38, 0.88);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+    --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.5);
+    --phone-frame-border: #1E3A70;
   }
 
-  * { margin:0; padding:0; box-sizing:border-box; transition: background-color 0.25s ease, border-color 0.25s ease; }
+  * { margin:0; padding:0; box-sizing:border-box; transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease; }
   body { font-family:'Plus Jakarta Sans', sans-serif; background:var(--bg-main); color:var(--text-primary); line-height:1.6; min-height:100vh; }
   .cursive { font-family:'Great Vibes', cursive; }
   a { text-decoration:none; color:inherit; }
@@ -61,9 +68,9 @@
   }
 
   @keyframes pulseGlow {
-    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4); }
-    70% { transform: scale(1.04); box-shadow: 0 0 0 12px rgba(244, 63, 94, 0); }
-    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(91, 132, 177, 0.4); }
+    70% { transform: scale(1.04); box-shadow: 0 0 0 12px rgba(91, 132, 177, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(91, 132, 177, 0); }
   }
 
   @keyframes floatAnim {
@@ -108,7 +115,7 @@
   .topbar { position:sticky; top:0; z-index:40; background:var(--topbar-bg); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--border-color); }
   .topbar-inner { display:flex; align-items:center; justify-content:space-between; padding:14px 0; }
   .brand { display:flex; align-items:center; gap:10px; font-size:1.15rem; font-weight:700; color:var(--text-primary); cursor:pointer; background:none; border:none; }
-  .brand i { color:var(--accent-rose); font-size:1.3rem; animation: heartBeat 2s infinite; }
+  .brand-logo { width:32px; height:32px; object-fit:contain; border-radius:6px; }
   
   .topbar-actions { display:flex; align-items:center; gap:12px; }
   .theme-toggle { background:var(--bg-subtle); border:1px solid var(--border-color); color:var(--text-primary); width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1rem; transition: transform 0.2s; }
@@ -116,7 +123,7 @@
 
   .role-switch { display:flex; gap:4px; background:var(--bg-subtle); border:1px solid var(--border-color); border-radius:999px; padding:4px; }
   .role-btn { font-size:0.75rem; font-weight:600; padding:6px 14px; border-radius:999px; border:none; background:none; color:var(--text-secondary); cursor:pointer; transition: all 0.2s; }
-  .role-btn.active { background:var(--text-primary); color:var(--bg-main); }
+  .role-btn.active { background:var(--accent-rose); color:#ffffff; }
 
   /* BUTTONS */
   .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; border:none; cursor:pointer; font-family:inherit; font-size:0.85rem; font-weight:600; border-radius:999px; padding:12px 24px; transition:all 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -125,7 +132,7 @@
   .btn-outline { background:transparent; border:1px solid var(--border-color); color:var(--text-primary); }
   .btn-outline:hover { background:var(--bg-subtle); transform:translateY(-1px); }
   .btn-rose { background:var(--accent-rose); color:#fff; }
-  .btn-rose:hover { background:var(--accent-rose-hover); transform:translateY(-2px); box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3); }
+  .btn-rose:hover { background:var(--accent-rose-hover); transform:translateY(-2px); box-shadow: 0 4px 12px rgba(91, 132, 177, 0.3); }
   .btn-emerald { background:var(--accent-emerald); color:#fff; }
   .btn-emerald:hover { opacity:0.9; transform:translateY(-1px); }
   .btn-sm { padding:7px 14px; font-size:0.78rem; }
@@ -162,14 +169,14 @@
   .feature-card i { color:var(--accent-rose); font-size:1.2rem; margin-bottom:12px; display:block; }
   .feature-card b { font-size:0.85rem; font-weight:700; display:block; margin-bottom:4px; color:var(--text-primary); }
   .feature-card span { font-size:0.75rem; color:var(--text-secondary); }
-  .promo-box { margin-top:50px; padding:24px; border-radius:18px; background:rgba(244, 63, 94, 0.08); border:1px solid rgba(244, 63, 94, 0.2); text-align:left; max-width:640px; margin-left:auto; margin-right:auto; }
+  .promo-box { margin-top:50px; padding:24px; border-radius:18px; background:rgba(91, 132, 177, 0.08); border:1px solid rgba(91, 132, 177, 0.25); text-align:left; max-width:640px; margin-left:auto; margin-right:auto; }
   .promo-box p.title { font-size:0.9rem; font-weight:700; color:var(--accent-rose); margin-bottom:6px; display:flex; align-items:center; gap:8px; }
   .promo-box p.desc { font-size:0.85rem; color:var(--text-secondary); }
 
   /* GALLERY */
   .cat-tabs { display:flex; gap:8px; overflow-x:auto; margin-bottom:24px; padding-bottom:6px; }
   .cat-btn { font-size:0.78rem; font-weight:600; padding:8px 18px; border-radius:999px; border:1px solid var(--border-color); background:var(--bg-card); color:var(--text-secondary); white-space:nowrap; cursor:pointer; transition: all 0.2s; }
-  .cat-btn.active { background:var(--text-primary); color:var(--bg-main); border-color:var(--text-primary); }
+  .cat-btn.active { background:var(--accent-rose); color:#ffffff; border-color:var(--accent-rose); }
   .tpl-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
   @media(min-width:700px){ .tpl-grid { grid-template-columns:repeat(3,1fr); } }
   .tpl-card { border:1px solid var(--border-color); border-radius:18px; overflow:hidden; background:var(--bg-card); box-shadow:var(--shadow-sm); transition: transform 0.3s ease, box-shadow 0.3s ease; }
@@ -279,7 +286,7 @@
   /* ADMIN */
   .tabs { display:flex; gap:8px; border-bottom:1px solid var(--border-color); margin-bottom:28px; }
   .tab-btn { display:flex; align-items:center; gap:8px; padding:12px 20px; font-size:0.85rem; font-weight:600; border:none; background:none; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; }
-  .tab-btn.active { color:var(--text-primary); border-color:var(--text-primary); }
+  .tab-btn.active { color:var(--text-primary); border-color:var(--accent-rose); }
   .stat-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-bottom:32px; }
   @media(min-width:700px){ .stat-grid { grid-template-columns:repeat(4,1fr); } }
   .stat-card { background:var(--bg-card); border:1px solid var(--border-color); border-radius:16px; padding:20px; box-shadow:var(--shadow-sm); }
@@ -382,7 +389,7 @@ const FONT_FAMILIES = {
 };
 
 const INITIAL_TEMPLATES = [
-  { id:"t1", name:"Rosé Elegance", category:"Pernikahan", price:75000, primary:"#928573", secondary:"#7a6e5d", bg:"#fdf9f6", bgImage:null, font:"elegant", layout:"klasik", photo:null },
+  { id:"t1", name:"Rosé Elegance", category:"Pernikahan", price:75000, primary:"#5B84B1", secondary:"#4A7C59", bg:"#fdf9f6", bgImage:null, font:"elegant", layout:"klasik", photo:"Gemini_Generated_Image_cvc9ancvc9ancvc9 (1).png" },
   { id:"t2", name:"Zaitun Sederhana", category:"Pernikahan", price:65000, primary:"#5c6b4a", secondary:"#3f4a34", bg:"#f6f5ee", bgImage:null, font:"elegant", layout:"minimalis", photo:null },
   { id:"t3", name:"Kelapa Muda", category:"Akikah", price:45000, primary:"#3f7d68", secondary:"#2f5d50", bg:"#f3f8f1", bgImage:null, font:"modern", layout:"modern", photo:null },
   { id:"t4", name:"Balon Ceria", category:"Ulang Tahun", price:40000, primary:"#c76b84", secondary:"#5aa9e6", bg:"#fff6f2", bgImage:null, font:"modern", layout:"modern", photo:null },
@@ -405,7 +412,7 @@ function emptyContent(tpl){
     mapsQuery: "",
     extraEvents: [],
     quote: preset.quote,
-    photos: tpl.photo ? [tpl.photo] : [],
+    photos: tpl.photo ? [tpl.photo] : ["Gemini_Generated_Image_cvc9ancvc9ancvc9 (1).png"],
     music: "",
     bankName: "",
     bankAccountNumber: "",
@@ -428,6 +435,7 @@ const esc = s => (s||"").toString().replace(/[&<>"']/g, m => ({"&":"&amp;","<":"
 const state = {
   theme: "light",
   role: "customer",
+  adminLoggedIn: false,
   view: "home",
   templates: JSON.parse(JSON.stringify(INITIAL_TEMPLATES)),
   invitations: [],
@@ -468,7 +476,35 @@ function toggleTheme(){
 
 /* =============== ACTIONS =============== */
 
-function setRole(r){ state.role = r; state.view = "home"; render(); }
+function setRole(r){ 
+  state.role = r; 
+  if(r === "customer"){
+    state.view = "home"; 
+  }
+  render(); 
+}
+
+function handleAdminLogin(e){
+  e.preventDefault();
+  const u = document.getElementById("admin-username").value.trim();
+  const p = document.getElementById("admin-password").value.trim();
+  if(u === "admin" && p === "gerbangsida123"){
+    state.adminLoggedIn = true;
+    showToast("Login Admin Berhasil");
+    render();
+  } else {
+    showToast("Username atau Password Salah!");
+  }
+}
+
+function adminLogout(){
+  state.adminLoggedIn = false;
+  state.role = "customer";
+  state.view = "home";
+  showToast("Logout Berhasil");
+  render();
+}
+
 function goto(view){ state.view = view; render(); }
 
 function startFromTemplate(tplId){
@@ -662,6 +698,10 @@ function render(){
   const root = document.getElementById("view-root");
 
   if(state.role === "admin"){
+    if(!state.adminLoggedIn){
+      root.innerHTML = renderAdminLoginForm();
+      return;
+    }
     root.innerHTML = renderAdmin();
     bindAdminExtras();
     return;
@@ -689,7 +729,10 @@ function renderTopbar(){
   return `
   <div class="topbar">
     <div class="container topbar-inner">
-      <button class="brand" onclick="setRole('customer')"><i class="fa-solid fa-heart"></i> Undangan<b>Digital</b></button>
+      <button class="brand" onclick="setRole('customer')">
+        <img src="Gemini_Generated_Image_cvc9ancvc9ancvc9 (1).png" alt="Logo Gerbang Sida" class="brand-logo" />
+        Gerbang<b>Sida</b>
+      </button>
       <div class="topbar-actions">
         <button class="theme-toggle" onclick="toggleTheme()" title="Ganti Mode Gelap/Terang">
           <i class="fa-solid ${state.theme==='light'?'fa-moon':'fa-sun'}"></i>
@@ -709,11 +752,11 @@ function renderHome(){
   return `
   <div class="container page">
     <div class="hero-home">
-      <p class="eyebrow">Buat dalam hitungan menit</p>
-      <h1>Undangan digital untuk<br>setiap momen berharga</h1>
+      <p class="eyebrow">Gerbang Sida Digital</p>
+      <h1>Satu Gerbang untuk<br>Semua Undangan Acara</h1>
       <p class="lead">Pilih template, ubah sesuai selera, bagikan lewat WhatsApp. Satu undangan yang sudah dibayar tetap bisa dipakai lagi untuk acara berikutnya — nikahan, akikah, ulang tahun, sampai syukuran.</p>
       <div class="btn-row">
-        <button class="btn btn-dark" onclick="goto('gallery')">Lihat Template</button>
+        <button class="btn btn-rose" onclick="goto('gallery')">Lihat Template</button>
         <button class="btn btn-outline" onclick="goto('myInvites')">Undangan Saya</button>
       </div>
 
@@ -741,7 +784,7 @@ function renderGallery(){
   <div class="container page">
     <button class="btn-link" onclick="goto('${state.reuseMode ? 'myInvites' : 'home'}')"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
     ${state.reuseMode ? `<div class="reuse-banner">Pilih template baru untuk acara berikutnya. Undangan ini sudah lunas, jadi tidak perlu bayar lagi.</div>` : ""}
-    <h2 class="cursive" style="font-size:2.2rem;margin-bottom:16px;">Pilih Template</h2>
+    <h2 class="cursive" style="font-size:2.2rem;margin-bottom:16px;">Pilih Template Gerbang Sida</h2>
     <div class="cat-tabs">
       ${["Semua",...CATEGORIES].map(c=>`<button class="cat-btn ${state.filterCat===c?'active':''}" onclick="setFilterCat('${c}')">${c}</button>`).join("")}
     </div>
@@ -763,7 +806,7 @@ function renderGallery(){
           </div>
           <div class="tpl-info">
             <span class="price">${rupiah(t.price)}</span>
-            <button class="btn btn-dark btn-sm" onclick="${state.reuseMode ? `reuseInvite('${t.id}')` : `startFromTemplate('${t.id}')`}">
+            <button class="btn btn-rose btn-sm" onclick="${state.reuseMode ? `reuseInvite('${t.id}')` : `startFromTemplate('${t.id}')`}">
               ${state.reuseMode ? "Pakai untuk acara ini" : "Coba & Edit"}
             </button>
           </div>
@@ -886,7 +929,7 @@ function renderEditor(){
       </div>
 
       <div>
-        <p class="preview-label">Pratinjau langsung (Scroll HP untuk Animasi)</p>
+        <p class="preview-label">Pratinjau langsung Gerbang Sida</p>
         <div id="preview-container">${renderPhonePreview(c)}</div>
       </div>
     </div>
@@ -1115,10 +1158,10 @@ function renderPayment(){
   <div class="container-sm page">
     <button class="btn-link" onclick="goto('editor')"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
     <h2 class="cursive" style="font-size:2.2rem;margin-bottom:4px;">Selesaikan Pembayaran</h2>
-    <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:24px;">Template undangan • ${rupiah(inv.price)}</p>
+    <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:24px;">Template Gerbang Sida • ${rupiah(inv.price)}</p>
     <div id="pay-methods"></div>
-    <div class="pay-note">Ini adalah simulasi pembayaran untuk demo. Pada versi produksi, langkah ini akan terhubung ke payment gateway Indonesia secara nyata.</div>
-    <button class="btn btn-dark btn-block" onclick="confirmPayment()">Konfirmasi Pembayaran</button>
+    <div class="pay-note">Ini adalah simulasi pembayaran untuk demo Gerbang Sida. Pada versi produksi, langkah ini akan terhubung ke payment gateway Indonesia secara nyata.</div>
+    <button class="btn btn-rose btn-block" onclick="confirmPayment()">Konfirmasi Pembayaran</button>
   </div>`;
 }
 
@@ -1126,13 +1169,13 @@ function renderPayment(){
 
 function renderSuccess(){
   const inv = getActiveInvite();
-  const link = `https://undangan.digital/u/${inv.slug}`;
+  const link = `https://gerbangsida.id/u/${inv.slug}`;
   const waText = encodeURIComponent(`Anda diundang! Lihat undangan kami di ${link}`);
   return `
   <div class="container-sm page" style="text-align:center">
     <div class="success-icon"><i class="fa-solid fa-check"></i></div>
     <h2 class="cursive" style="font-size:2.2rem;margin-bottom:6px;">Pembayaran Berhasil</h2>
-    <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:24px;">Undangan kamu sudah aktif dan siap dibagikan.</p>
+    <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:24px;">Undangan Gerbang Sida kamu sudah aktif dan siap dibagikan.</p>
     <div class="link-box">
       <span>${link}</span>
       <button onclick="copyText('${link}','Tautan disalin')"><i class="fa-regular fa-copy"></i></button>
@@ -1149,7 +1192,7 @@ function renderMyInvites(){
   <div class="container page">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
       <h2 class="cursive" style="font-size:2.2rem;">Undangan Saya</h2>
-      <button class="btn btn-dark btn-sm" onclick="goto('gallery')"><i class="fa-solid fa-plus"></i> Buat Baru</button>
+      <button class="btn btn-rose btn-sm" onclick="goto('gallery')"><i class="fa-solid fa-plus"></i> Buat Baru</button>
     </div>
     ${state.invitations.length === 0 ? `<p class="empty-note">Belum ada undangan. Mulai dari halaman Template.</p>` : ""}
     ${state.invitations.map(inv=>{
@@ -1175,7 +1218,7 @@ function renderMyInvites(){
 /* =============== KIRIM UNDANGAN MASSAL =============== */
 
 function defaultMassTemplate(){
-  return "Halo {nama} \uD83D\uDC4B,\nAnda diundang ke acara kami. Silakan lihat undangan digital kami di:\n{link}\n\nMohon konfirmasi kehadiran Anda ya. Terima kasih \uD83D\uDE4F";
+  return "Halo {nama} \uD83D\uDC4B,\nAnda diundang ke acara kami. Silakan lihat undangan digital kami di Gerbang Sida:\n{link}\n\nMohon konfirmasi kehadiran Anda ya. Terima kasih \uD83D\uDE4F";
 }
 
 function openMassSend(id){
@@ -1280,7 +1323,7 @@ function updateMassTemplate(value){
 }
 
 function buildMassMessage(invite, guest){
-  const link = `https://undangan.digital/u/${invite.slug}?to=${encodeURIComponent(guest.nama)}`;
+  const link = `https://gerbangsida.id/u/${invite.slug}?to=${encodeURIComponent(guest.nama)}`;
   const message = state.massTemplate.split("{nama}").join(guest.nama).split("{link}").join(link);
   return { link, message };
 }
@@ -1333,7 +1376,7 @@ function renderMassTable(){
 
 function renderMassSend(){
   const inv = getActiveInvite();
-  const link = `https://undangan.digital/u/${inv.slug}`;
+  const link = `https://gerbangsida.id/u/${inv.slug}`;
   return `
   <div class="container page">
     <button class="btn-link" onclick="goto('myInvites')"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
@@ -1364,7 +1407,36 @@ function renderMassSend(){
   </div>`;
 }
 
-/* =============== ADMIN =============== */
+/* =============== ADMIN LOGIN & PANEL =============== */
+
+function renderAdminLoginForm(){
+  return `
+  <div class="container-sm page" style="margin-top:40px;">
+    <div class="card">
+      <div style="text-align:center;margin-bottom:20px;">
+        <i class="fa-solid fa-shield-halved" style="font-size:2.5rem;color:var(--accent-rose);margin-bottom:10px;"></i>
+        <h2 style="font-size:1.5rem;font-weight:700;color:var(--text-primary)">Login Admin Gerbang Sida</h2>
+        <p style="font-size:0.8rem;color:var(--text-secondary);">Masukkan Username dan Password untuk mengakses panel admin</p>
+      </div>
+      <form onsubmit="handleAdminLogin(event)">
+        <label class="field">
+          <span>Username</span>
+          <input type="text" id="admin-username" class="in" placeholder="Username admin" required>
+        </label>
+        <label class="field">
+          <span>Password</span>
+          <input type="password" id="admin-password" class="in" placeholder="Password admin" required>
+        </label>
+        <div style="background:var(--bg-subtle);padding:10px;border-radius:8px;margin-bottom:16px;font-size:0.75rem;color:var(--text-secondary)">
+          <b>Default Credential:</b><br>
+          Username: <code>admin</code><br>
+          Password: <code>gerbangsida123</code>
+        </div>
+        <button type="submit" class="btn btn-rose btn-block"><i class="fa-solid fa-right-to-bracket"></i> Masuk Admin</button>
+      </form>
+    </div>
+  </div>`;
+}
 
 function setAdminTab(t){ state.adminTab = t; render(); }
 
@@ -1374,10 +1446,15 @@ function renderAdmin(){
 
   return `
   <div class="container page">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <h2 style="font-size:1.8rem;font-weight:800;"><i class="fa-solid fa-user-shield" style="color:var(--accent-rose)"></i> Panel Admin Gerbang Sida</h2>
+      <button class="btn btn-outline btn-sm" onclick="adminLogout()"><i class="fa-solid fa-right-from-bracket"></i> Keluar Admin</button>
+    </div>
+
     <div class="tabs">
       <button class="tab-btn ${state.adminTab==='dashboard'?'active':''}" onclick="setAdminTab('dashboard')"><i class="fa-solid fa-chart-column"></i> Dashboard</button>
       <button class="tab-btn ${state.adminTab==='transactions'?'active':''}" onclick="setAdminTab('transactions')"><i class="fa-solid fa-wallet"></i> Transaksi</button>
-      <button class="tab-btn ${state.adminTab==='templates'?'active':''}" onclick="setAdminTab('templates')"><i class="fa-solid fa-table-cells-large"></i> Template</button>
+      <button class="tab-btn ${state.adminTab==='templates'?'active':''}" onclick="setAdminTab('templates')"><i class="fa-solid fa-table-cells-large"></i> Kelola Template</button>
     </div>
 
     ${state.adminTab==='dashboard' ? renderAdminDashboard(paid, revenue) : ""}
@@ -1452,7 +1529,7 @@ function resetDraftTemplate(){
     quote: "Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir.",
     photos: [], music: "",
     bankName: "", bankAccountNumber: "", bankAccountHolder: "",
-    primary: "#928573", secondary: "#7a6e5d", bg: "#fdf9f6", bgImage: null,
+    primary: "#5B84B1", secondary: "#4A7C59", bg: "#F8F9FA", bgImage: null,
     font: "elegant", layout: "klasik",
   };
 }
@@ -1536,7 +1613,7 @@ function renderAdminTemplates(){
   const d = draftTemplate;
   return `
   <div class="card" style="margin-bottom:20px">
-    <p class="section-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Designer Template — publikasikan desain ke katalog customer</p>
+    <p class="section-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Designer Template — publikasikan desain ke katalog Gerbang Sida</p>
   </div>
   <div class="editor-grid" style="margin-bottom:36px">
     <div class="stack">
@@ -1593,7 +1670,7 @@ function renderAdminTemplates(){
       </div>
 
       <div style="display:flex;gap:10px">
-        <button class="btn btn-dark btn-block" onclick="publishTemplate()"><i class="fa-solid fa-cloud-arrow-up"></i> Publikasikan Template</button>
+        <button class="btn btn-rose btn-block" onclick="publishTemplate()"><i class="fa-solid fa-cloud-arrow-up"></i> Publikasikan Template</button>
         <button class="btn btn-outline" onclick="resetDraftDesign()" title="Reset desain"><i class="fa-solid fa-rotate-left"></i></button>
       </div>
     </div>
