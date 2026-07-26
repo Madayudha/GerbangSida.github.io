@@ -3,116 +3,207 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Undangan Digital</title>
+<title>Undangan Digital Modern & Animated</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'Poppins', sans-serif; background:#fafafa; color:#262626; line-height:1.6; }
+  :root {
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-subtle: #f1f5f9;
+    --border-color: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+    --accent-rose: #f43f5e;
+    --accent-rose-hover: #e11d48;
+    --accent-emerald: #10b981;
+    --topbar-bg: rgba(255, 255, 255, 0.8);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 20px -2px rgba(0,0,0,0.08);
+    --phone-frame-border: #1e293b;
+  }
+
+  [data-theme="dark"] {
+    --bg-main: #0b0f17;
+    --bg-card: #151c28;
+    --bg-subtle: #1e293b;
+    --border-color: #2e3a4e;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --topbar-bg: rgba(21, 28, 40, 0.8);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.4);
+    --phone-frame-border: #334155;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; transition: background-color 0.25s ease, border-color 0.25s ease; }
+  body { font-family:'Plus Jakarta Sans', sans-serif; background:var(--bg-main); color:var(--text-primary); line-height:1.6; min-height:100vh; }
   .cursive { font-family:'Great Vibes', cursive; }
   a { text-decoration:none; color:inherit; }
   img { max-width:100%; display:block; }
 
+  /* ==================== ANIMATIONS KEYFRAMES ==================== */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes zoomIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes pulseGlow {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4); }
+    70% { transform: scale(1.04); box-shadow: 0 0 0 12px rgba(244, 63, 94, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+  }
+
+  @keyframes floatAnim {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  @keyframes heartBeat {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.18); }
+    50% { transform: scale(0.98); }
+    75% { transform: scale(1.12); }
+  }
+
+  /* Scroll Triggered Class */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(25px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .animate-zoom {
+    opacity: 0;
+    transform: scale(0.85);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .animate-zoom.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
   /* LAYOUT */
-  .container { max-width:1152px; margin:0 auto; padding:0 16px; }
-  .container-sm { max-width:480px; margin:0 auto; padding:0 16px; }
-  .page { padding:40px 0; }
+  .container { max-width:1152px; margin:0 auto; padding:0 20px; }
+  .container-sm { max-width:480px; margin:0 auto; padding:0 20px; }
+  .page { padding:40px 0 80px; }
 
   /* TOPBAR */
-  .topbar { position:sticky; top:0; z-index:40; background:rgba(255,255,255,0.92); backdrop-filter:blur(6px); border-bottom:1px solid #e5e5e5; }
-  .topbar-inner { display:flex; align-items:center; justify-content:space-between; padding:12px 0; }
-  .brand { display:flex; align-items:center; gap:8px; font-size:1.1rem; color:#171717; cursor:pointer; background:none; border:none; }
-  .brand i { color:#f43f5e; }
-  .role-switch { display:flex; gap:4px; background:#f0f0f0; border-radius:999px; padding:4px; }
-  .role-btn { font-size:0.75rem; padding:6px 14px; border-radius:999px; border:none; background:none; color:#8a8a8a; cursor:pointer; }
-  .role-btn.active { background:#171717; color:#fff; }
+  .topbar { position:sticky; top:0; z-index:40; background:var(--topbar-bg); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--border-color); }
+  .topbar-inner { display:flex; align-items:center; justify-content:space-between; padding:14px 0; }
+  .brand { display:flex; align-items:center; gap:10px; font-size:1.15rem; font-weight:700; color:var(--text-primary); cursor:pointer; background:none; border:none; }
+  .brand i { color:var(--accent-rose); font-size:1.3rem; animation: heartBeat 2s infinite; }
+  
+  .topbar-actions { display:flex; align-items:center; gap:12px; }
+  .theme-toggle { background:var(--bg-subtle); border:1px solid var(--border-color); color:var(--text-primary); width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1rem; transition: transform 0.2s; }
+  .theme-toggle:hover { background:var(--border-color); transform: rotate(15deg); }
+
+  .role-switch { display:flex; gap:4px; background:var(--bg-subtle); border:1px solid var(--border-color); border-radius:999px; padding:4px; }
+  .role-btn { font-size:0.75rem; font-weight:600; padding:6px 14px; border-radius:999px; border:none; background:none; color:var(--text-secondary); cursor:pointer; transition: all 0.2s; }
+  .role-btn.active { background:var(--text-primary); color:var(--bg-main); }
 
   /* BUTTONS */
-  .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; cursor:pointer; font-family:inherit; font-size:0.85rem; border-radius:999px; padding:11px 22px; transition:0.2s; }
-  .btn-dark { background:#171717; color:#fff; }
-  .btn-dark:hover { background:#333; }
-  .btn-outline { background:none; border:1px solid #d4d4d4; color:#262626; }
-  .btn-outline:hover { background:#f5f5f5; }
-  .btn-rose { background:#f43f5e; color:#fff; }
-  .btn-rose:hover { background:#e11d48; }
-  .btn-emerald { background:#10b981; color:#fff; }
-  .btn-emerald:hover { background:#059669; }
-  .btn-sm { padding:6px 12px; font-size:0.75rem; }
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; border:none; cursor:pointer; font-family:inherit; font-size:0.85rem; font-weight:600; border-radius:999px; padding:12px 24px; transition:all 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+  .btn-dark { background:var(--text-primary); color:var(--bg-main); }
+  .btn-dark:hover { opacity:0.9; transform:translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .btn-outline { background:transparent; border:1px solid var(--border-color); color:var(--text-primary); }
+  .btn-outline:hover { background:var(--bg-subtle); transform:translateY(-1px); }
+  .btn-rose { background:var(--accent-rose); color:#fff; }
+  .btn-rose:hover { background:var(--accent-rose-hover); transform:translateY(-2px); box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3); }
+  .btn-emerald { background:var(--accent-emerald); color:#fff; }
+  .btn-emerald:hover { opacity:0.9; transform:translateY(-1px); }
+  .btn-sm { padding:7px 14px; font-size:0.78rem; }
   .btn-block { width:100%; }
-  .btn-link { background:none; border:none; color:#8a8a8a; font-size:0.85rem; display:flex; align-items:center; gap:6px; cursor:pointer; padding:0; margin-bottom:24px; }
-  .btn-link:hover { color:#262626; }
+  .btn-link { background:none; border:none; color:var(--text-secondary); font-size:0.85rem; font-weight:500; display:flex; align-items:center; gap:6px; cursor:pointer; padding:0; margin-bottom:24px; transition: color 0.2s; }
+  .btn-link:hover { color:var(--text-primary); }
 
   /* CARD / FORM */
-  .card { background:#fff; border:1px solid #e5e5e5; border-radius:14px; padding:20px; }
-  .field { display:block; margin-bottom:12px; }
-  .field span { display:block; font-size:0.72rem; color:#8a8a8a; margin-bottom:5px; }
-  .in { width:100%; border:1px solid #e0e0e0; border-radius:8px; padding:9px 12px; font-size:0.85rem; font-family:inherit; background:#fff; color:#262626; }
-  .in:focus { outline:none; border-color:#171717; }
+  .card { background:var(--bg-card); border:1px solid var(--border-color); border-radius:18px; padding:24px; box-shadow:var(--shadow-sm); }
+  .field { display:block; margin-bottom:14px; }
+  .field span { display:block; font-size:0.75rem; font-weight:600; color:var(--text-secondary); margin-bottom:6px; }
+  .in { width:100%; border:1px solid var(--border-color); border-radius:10px; padding:10px 14px; font-size:0.85rem; font-family:inherit; background:var(--bg-main); color:var(--text-primary); transition: border-color 0.2s; }
+  .in:focus { outline:none; border-color:var(--accent-rose); }
   textarea.in { resize:vertical; }
-  .section-title { font-size:0.85rem; font-weight:600; display:flex; align-items:center; gap:8px; margin-bottom:14px; color:#262626; }
-  .section-title i { color:#f43f5e; }
+  .section-title { font-size:0.9rem; font-weight:700; display:flex; align-items:center; gap:8px; margin-bottom:16px; color:var(--text-primary); }
+  .section-title i { color:var(--accent-rose); }
 
   /* GRID */
   .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-  .editor-grid { display:grid; grid-template-columns:1fr; gap:32px; }
+  .editor-grid { display:grid; grid-template-columns:1fr; gap:36px; }
   @media(min-width:860px){ .editor-grid { grid-template-columns:1fr 1fr; } }
   .stack { display:flex; flex-direction:column; gap:20px; }
 
   /* HOME */
-  .hero-home { text-align:center; padding:70px 16px; }
-  .eyebrow { font-size:0.72rem; text-transform:uppercase; letter-spacing:2px; color:#f43f5e; margin-bottom:10px; }
-  .hero-home h1 { font-size:2.4rem; color:#171717; margin-bottom:14px; line-height:1.25; }
-  .hero-home p.lead { color:#8a8a8a; max-width:520px; margin:0 auto 26px; }
-  .btn-row { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
-  .feature-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-top:60px; text-align:left; }
+  .hero-home { text-align:center; padding:60px 16px; animation: fadeInUp 0.8s ease-out; }
+  .eyebrow { font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--accent-rose); margin-bottom:12px; }
+  .hero-home h1 { font-size:2.8rem; font-weight:800; color:var(--text-primary); margin-bottom:16px; line-height:1.2; letter-spacing:-0.5px; }
+  .hero-home p.lead { color:var(--text-secondary); max-width:560px; margin:0 auto 32px; font-size:1rem; }
+  .btn-row { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; }
+  .feature-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:60px; text-align:left; }
   @media(min-width:700px){ .feature-grid { grid-template-columns:repeat(5,1fr); } }
-  .feature-card { padding:16px; border-radius:12px; background:#fff; border:1px solid #e5e5e5; }
-  .feature-card i { color:#f43f5e; font-size:1rem; margin-bottom:8px; display:block; }
-  .feature-card b { font-size:0.82rem; display:block; margin-bottom:2px; }
-  .feature-card span { font-size:0.72rem; color:#8a8a8a; }
-  .promo-box { margin-top:50px; padding:22px; border-radius:16px; background:#fff1f2; border:1px solid #ffe4e6; text-align:left; max-width:640px; margin-left:auto; margin-right:auto; }
-  .promo-box p.title { font-size:0.85rem; font-weight:600; color:#be123c; margin-bottom:4px; display:flex; align-items:center; gap:8px; }
-  .promo-box p.desc { font-size:0.85rem; color:#525252; }
+  .feature-card { padding:20px; border-radius:16px; background:var(--bg-card); border:1px solid var(--border-color); box-shadow:var(--shadow-sm); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .feature-card i { color:var(--accent-rose); font-size:1.2rem; margin-bottom:12px; display:block; }
+  .feature-card b { font-size:0.85rem; font-weight:700; display:block; margin-bottom:4px; color:var(--text-primary); }
+  .feature-card span { font-size:0.75rem; color:var(--text-secondary); }
+  .promo-box { margin-top:50px; padding:24px; border-radius:18px; background:rgba(244, 63, 94, 0.08); border:1px solid rgba(244, 63, 94, 0.2); text-align:left; max-width:640px; margin-left:auto; margin-right:auto; }
+  .promo-box p.title { font-size:0.9rem; font-weight:700; color:var(--accent-rose); margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+  .promo-box p.desc { font-size:0.85rem; color:var(--text-secondary); }
 
   /* GALLERY */
-  .cat-tabs { display:flex; gap:8px; overflow-x:auto; margin-bottom:22px; padding-bottom:4px; }
-  .cat-btn { font-size:0.72rem; padding:8px 16px; border-radius:999px; border:1px solid #d4d4d4; background:none; color:#525252; white-space:nowrap; cursor:pointer; }
-  .cat-btn.active { background:#171717; color:#fff; border-color:#171717; }
-  .tpl-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; }
+  .cat-tabs { display:flex; gap:8px; overflow-x:auto; margin-bottom:24px; padding-bottom:6px; }
+  .cat-btn { font-size:0.78rem; font-weight:600; padding:8px 18px; border-radius:999px; border:1px solid var(--border-color); background:var(--bg-card); color:var(--text-secondary); white-space:nowrap; cursor:pointer; transition: all 0.2s; }
+  .cat-btn.active { background:var(--text-primary); color:var(--bg-main); border-color:var(--text-primary); }
+  .tpl-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
   @media(min-width:700px){ .tpl-grid { grid-template-columns:repeat(3,1fr); } }
-  .tpl-card { border:1px solid #e5e5e5; border-radius:14px; overflow:hidden; background:#fff; }
-  .tpl-cover { height:150px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:12px; }
-  .tpl-cover .cat { font-size:0.62rem; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:4px; }
-  .tpl-cover .name { font-size:1.7rem; }
-  .tpl-info { padding:14px; display:flex; align-items:center; justify-content:space-between; }
-  .tpl-info .price { font-size:0.85rem; font-weight:600; }
-  .reuse-banner { margin-bottom:22px; padding:12px 14px; border-radius:10px; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; font-size:0.85rem; }
+  .tpl-card { border:1px solid var(--border-color); border-radius:18px; overflow:hidden; background:var(--bg-card); box-shadow:var(--shadow-sm); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+  .tpl-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+  .tpl-cover { height:160px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:16px; position:relative; overflow:hidden; }
+  .tpl-cover .cat { font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:4px; }
+  .tpl-cover .name { font-size:1.8rem; transition: transform 0.3s ease; }
+  .tpl-card:hover .tpl-cover .name { transform: scale(1.06); }
+  .tpl-info { padding:16px; display:flex; align-items:center; justify-content:space-between; background:var(--bg-card); border-top:1px solid var(--border-color); }
+  .tpl-info .price { font-size:0.9rem; font-weight:700; color:var(--text-primary); }
+  .reuse-banner { margin-bottom:24px; padding:14px 18px; border-radius:14px; background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); color:var(--accent-emerald); font-size:0.85rem; font-weight:500; }
 
   /* EDITOR photos */
-  .photo-thumbs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
-  .photo-thumb { position:relative; width:60px; height:60px; border-radius:8px; overflow:hidden; border:1px solid #e5e5e5; }
+  .photo-thumbs { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px; }
+  .photo-thumb { position:relative; width:64px; height:64px; border-radius:10px; overflow:hidden; border:1px solid var(--border-color); animation: zoomIn 0.3s ease; }
   .photo-thumb img { width:100%; height:100%; object-fit:cover; }
-  .photo-thumb button { position:absolute; top:2px; right:2px; background:rgba(0,0,0,0.6); color:#fff; border:none; border-radius:50%; width:16px; height:16px; font-size:9px; cursor:pointer; line-height:1; }
+  .photo-thumb button { position:absolute; top:3px; right:3px; background:rgba(0,0,0,0.7); color:#fff; border:none; border-radius:50%; width:18px; height:18px; font-size:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 
-  .badge-paid { font-size:0.72rem; background:#d1fae5; color:#047857; padding:5px 12px; border-radius:999px; display:inline-flex; align-items:center; gap:5px; }
+  .badge-paid { font-size:0.75rem; font-weight:600; background:rgba(16, 185, 129, 0.1); color:var(--accent-emerald); padding:6px 14px; border-radius:999px; border:1px solid rgba(16, 185, 129, 0.2); display:inline-flex; align-items:center; gap:6px; }
 
-  /* PHONE PREVIEW */
-  .preview-label { font-size:0.72rem; text-transform:uppercase; letter-spacing:2px; color:#a3a3a3; margin-bottom:8px; }
-  .phone-frame { width:100%; max-width:380px; height:680px; margin:0 auto; border:8px solid #171717; border-radius:32px; overflow:hidden; position:relative; background:#fff; box-shadow:0 20px 40px rgba(0,0,0,0.15); }
-  .phone-scroll { height:100%; overflow-y:auto; position:relative; }
-  .phone-scroll::-webkit-scrollbar { width:5px; }
-  .phone-scroll::-webkit-scrollbar-thumb { background:rgba(0,0,0,0.15); border-radius:4px; }
+  /* PHONE PREVIEW (WITH ANIMATIONS) */
+  .preview-label { font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--text-muted); margin-bottom:12px; }
+  .phone-frame { width:100%; max-width:380px; height:680px; margin:0 auto; border:10px solid var(--phone-frame-border); border-radius:36px; overflow:hidden; position:relative; background:#fff; box-shadow:var(--shadow-md); }
+  .phone-scroll { height:100%; overflow-y:auto; position:relative; scroll-behavior: smooth; }
+  .phone-scroll::-webkit-scrollbar { width:4px; }
+  .phone-scroll::-webkit-scrollbar-thumb { background:rgba(0,0,0,0.2); border-radius:4px; }
 
-  .p-cover { position:absolute; inset:0; z-index:20; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 26px; color:#fff; transition:all .7s ease; background-size:cover; background-position:center; }
+  /* COVER ANIMATION */
+  .p-cover { position:absolute; inset:0; z-index:20; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 26px; color:#fff; transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s ease; background-size:cover; background-position:center; }
   .p-cover.hidden-cover { opacity:0; transform:translateY(-100%); pointer-events:none; }
-  .p-cover .kepada { font-size:0.68rem; text-transform:uppercase; letter-spacing:2px; margin-bottom:10px; }
-  .p-cover .names { font-size:2.8rem; margin-bottom:14px; }
-  .p-cover .desc { font-size:0.72rem; opacity:0.9; max-width:220px; }
-  .p-open-btn { margin-top:22px; display:flex; align-items:center; gap:8px; padding:10px 24px; border-radius:999px; font-size:0.72rem; color:#fff; border:none; cursor:pointer; }
+  .p-cover .kepada { font-size:0.68rem; text-transform:uppercase; letter-spacing:2px; margin-bottom:10px; animation: fadeInUp 0.8s ease forwards; }
+  .p-cover .names { font-size:2.8rem; margin-bottom:14px; animation: zoomIn 0.9s ease forwards; }
+  .p-cover .desc { font-size:0.72rem; opacity:0.9; max-width:220px; animation: fadeInUp 1s ease forwards; }
+  .p-open-btn { margin-top:22px; display:flex; align-items:center; gap:8px; padding:10px 24px; border-radius:999px; font-size:0.72rem; color:#fff; border:none; cursor:pointer; animation: pulseGlow 2s infinite; }
 
   .p-hero { min-height:280px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 24px; color:#fff; background-size:cover; background-position:center; }
   .p-hero .cat { font-size:0.68rem; text-transform:uppercase; letter-spacing:2.5px; margin-bottom:8px; }
@@ -125,33 +216,38 @@
   .p-person { flex:1; }
   .p-person .pname { font-size:1.35rem; }
   .p-person .prole { font-size:0.62rem; opacity:0.7; margin-top:2px; }
-  .p-amp { font-size:1.7rem; }
+  .p-amp { font-size:1.7rem; animation: heartBeat 1.8s infinite; display:inline-block; }
 
   .p-title { font-size:1.7rem; margin-bottom:4px; }
   .p-sub { font-size:0.62rem; text-transform:uppercase; letter-spacing:2px; opacity:0.6; margin-bottom:16px; }
 
   .cd-row { display:flex; justify-content:center; gap:8px; }
-  .cd-box { width:56px; height:56px; border-radius:10px; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .cd-box { width:56px; height:56px; border-radius:10px; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; transition: transform 0.2s; }
+  .cd-box:hover { transform: translateY(-3px); }
   .cd-box .num { font-size:0.9rem; font-weight:700; }
   .cd-box .lbl { font-size:0.55rem; text-transform:uppercase; }
 
-  .event-card { margin-top:22px; border-radius:12px; padding:16px; text-align:left; }
+  .event-card { margin-top:22px; border-radius:12px; padding:16px; text-align:left; transition: transform 0.3s ease; }
+  .event-card:hover { transform: scale(1.02); }
   .event-card .ename { font-size:1.15rem; margin-bottom:4px; }
   .event-card .erow { font-size:0.72rem; display:flex; align-items:center; gap:5px; margin-bottom:2px; }
   .event-card .eaddr { font-size:0.68rem; opacity:0.7; }
   .maps-embed { margin-top:12px; border-radius:10px; overflow:hidden; height:110px; }
   .maps-embed iframe { width:100%; height:100%; border:0; }
+  .extra-event-card { border:1px dashed var(--border-color); border-radius:12px; padding:14px; margin-bottom:12px; background:var(--bg-main); }
 
   .gallery-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
   .gallery-grid .g-large { grid-column:span 2; height:130px; }
   .gallery-grid .g-item { height:95px; border-radius:8px; overflow:hidden; }
-  .gallery-grid img { width:100%; height:100%; object-fit:cover; }
+  .gallery-grid img { width:100%; height:100%; object-fit:cover; transition: transform 0.5s ease; }
+  .gallery-grid .g-item:hover img, .gallery-grid .g-large:hover img { transform: scale(1.08); }
   .gallery-empty { height:95px; border-radius:8px; border:1px dashed #ccc; display:flex; align-items:center; justify-content:center; gap:6px; font-size:0.72rem; opacity:0.5; }
 
   .rsvp-form { text-align:left; display:flex; flex-direction:column; gap:8px; }
-  .rsvp-thanks { font-size:0.85rem; }
+  .rsvp-thanks { font-size:0.85rem; animation: zoomIn 0.4s ease; }
 
-  .gift-card { background:#fff; border-radius:12px; padding:16px; text-align:center; }
+  .gift-card { background:#fff; border-radius:12px; padding:16px; text-align:center; transition: transform 0.3s; }
+  .gift-card:hover { transform: translateY(-3px); }
   .gift-card .bankname { font-size:0.9rem; font-weight:600; margin-bottom:2px; }
   .gift-card .accnum { font-size:1.05rem; font-weight:700; letter-spacing:1px; margin:4px 0; }
   .gift-card .accholder { font-size:0.68rem; opacity:0.7; margin-bottom:12px; }
@@ -160,59 +256,62 @@
   .p-footer .thanks { font-size:0.72rem; opacity:0.85; }
   .p-footer .fname { font-size:1.6rem; margin-top:4px; }
 
-  .reset-cover { position:absolute; top:10px; right:10px; z-index:30; background:rgba(0,0,0,0.4); color:#fff; border:none; border-radius:50%; width:26px; height:26px; cursor:pointer; }
+  .reset-cover { position:absolute; top:10px; right:10px; z-index:30; background:rgba(0,0,0,0.4); color:#fff; border:none; border-radius:50%; width:26px; height:26px; cursor:pointer; transition: transform 0.2s; }
+  .reset-cover:hover { transform: rotate(-90deg); }
 
   /* PAYMENT */
-  .pay-method { display:flex; align-items:center; gap:10px; border:1px solid #e5e5e5; border-radius:10px; padding:12px; cursor:pointer; margin-bottom:8px; }
-  .pay-method.active { border-color:#171717; background:#fafafa; }
-  .pay-note { background:#f7f7f7; border:1px solid #e5e5e5; border-radius:10px; padding:14px; font-size:0.75rem; color:#8a8a8a; margin:18px 0; }
+  .pay-method { display:flex; align-items:center; gap:12px; border:1px solid var(--border-color); border-radius:12px; padding:14px; cursor:pointer; margin-bottom:10px; background:var(--bg-card); transition: all 0.2s; }
+  .pay-method.active { border-color:var(--text-primary); background:var(--bg-subtle); }
+  .pay-note { background:var(--bg-subtle); border:1px solid var(--border-color); border-radius:12px; padding:16px; font-size:0.78rem; color:var(--text-secondary); margin:20px 0; }
 
   /* SUCCESS */
-  .success-icon { width:56px; height:56px; border-radius:50%; background:#d1fae5; color:#059669; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:1.4rem; }
-  .link-box { background:#f7f7f7; border:1px solid #e5e5e5; border-radius:10px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
-  .link-box span { font-size:0.75rem; color:#525252; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .link-box button { background:none; border:none; cursor:pointer; color:#8a8a8a; }
+  .success-icon { width:64px; height:64px; border-radius:50%; background:rgba(16, 185, 129, 0.1); color:var(--accent-emerald); display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:1.6rem; border:1px solid rgba(16, 185, 129, 0.2); animation: zoomIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+  .link-box { background:var(--bg-subtle); border:1px solid var(--border-color); border-radius:12px; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  .link-box span { font-size:0.8rem; color:var(--text-secondary); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .link-box button { background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:1rem; }
 
   /* MY INVITES */
-  .invite-row { background:#fff; border:1px solid #e5e5e5; border-radius:12px; padding:16px; display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; gap:10px; flex-wrap:wrap; }
-  .invite-row .meta b { font-size:0.85rem; }
-  .invite-row .meta p { font-size:0.72rem; color:#8a8a8a; }
+  .invite-row { background:var(--bg-card); border:1px solid var(--border-color); border-radius:16px; padding:20px; display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; gap:12px; flex-wrap:wrap; box-shadow:var(--shadow-sm); transition: transform 0.2s; }
+  .invite-row:hover { transform: translateY(-2px); }
+  .invite-row .meta b { font-size:0.9rem; color:var(--text-primary); }
+  .invite-row .meta p { font-size:0.75rem; color:var(--text-secondary); margin-top:2px; }
 
   /* ADMIN */
-  .tabs { display:flex; gap:6px; border-bottom:1px solid #e5e5e5; margin-bottom:26px; }
-  .tab-btn { display:flex; align-items:center; gap:6px; padding:12px 16px; font-size:0.85rem; border:none; background:none; color:#a3a3a3; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; }
-  .tab-btn.active { color:#171717; border-color:#171717; }
-  .stat-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-bottom:28px; }
+  .tabs { display:flex; gap:8px; border-bottom:1px solid var(--border-color); margin-bottom:28px; }
+  .tab-btn { display:flex; align-items:center; gap:8px; padding:12px 20px; font-size:0.85rem; font-weight:600; border:none; background:none; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; }
+  .tab-btn.active { color:var(--text-primary); border-color:var(--text-primary); }
+  .stat-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-bottom:32px; }
   @media(min-width:700px){ .stat-grid { grid-template-columns:repeat(4,1fr); } }
-  .stat-card { background:#fff; border:1px solid #e5e5e5; border-radius:12px; padding:16px; }
-  .stat-card i { color:#f43f5e; margin-bottom:8px; display:block; }
-  .stat-card .val { font-size:1.3rem; font-weight:600; }
-  .stat-card .lbl { font-size:0.72rem; color:#8a8a8a; }
-  .bar-chart { display:flex; align-items:flex-end; gap:18px; height:220px; padding-top:10px; }
+  .stat-card { background:var(--bg-card); border:1px solid var(--border-color); border-radius:16px; padding:20px; box-shadow:var(--shadow-sm); }
+  .stat-card i { color:var(--accent-rose); margin-bottom:10px; display:block; font-size:1.2rem; }
+  .stat-card .val { font-size:1.4rem; font-weight:700; color:var(--text-primary); }
+  .stat-card .lbl { font-size:0.75rem; color:var(--text-secondary); margin-top:2px; }
+  .bar-chart { display:flex; align-items:flex-end; gap:20px; height:220px; padding-top:10px; }
   .bar-col { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; }
-  .bar-col .bar { width:100%; max-width:50px; background:#f43f5e; border-radius:6px 6px 0 0; transition:height .3s; }
-  .bar-col .bval { font-size:0.68rem; margin-bottom:4px; color:#525252; }
-  .bar-col .blbl { font-size:0.68rem; margin-top:8px; color:#8a8a8a; text-align:center; }
+  .bar-col .bar { width:100%; max-width:48px; background:var(--accent-rose); border-radius:8px 8px 0 0; transition:height .5s cubic-bezier(0.16, 1, 0.3, 1); }
+  .bar-col .bval { font-size:0.7rem; font-weight:600; margin-bottom:6px; color:var(--text-secondary); }
+  .bar-col .blbl { font-size:0.72rem; margin-top:10px; color:var(--text-muted); text-align:center; font-weight:500; }
 
   table { width:100%; border-collapse:collapse; font-size:0.85rem; }
-  thead { background:#fafafa; }
-  th { text-align:left; padding:12px 16px; font-size:0.68rem; text-transform:uppercase; color:#8a8a8a; }
-  td { padding:12px 16px; border-top:1px solid #f0f0f0; }
-  .status-pill { font-size:0.68rem; padding:4px 10px; border-radius:999px; }
-  .status-paid { background:#d1fae5; color:#047857; }
-  .status-draft { background:#f0f0f0; color:#737373; }
+  thead { background:var(--bg-subtle); }
+  th { text-align:left; padding:14px 18px; font-size:0.7rem; font-weight:700; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.5px; }
+  td { padding:14px 18px; border-top:1px solid var(--border-color); color:var(--text-primary); }
+  .status-pill { font-size:0.7rem; font-weight:600; padding:4px 12px; border-radius:999px; }
+  .status-paid { background:rgba(16, 185, 129, 0.1); color:var(--accent-emerald); }
+  .status-draft { background:var(--bg-subtle); color:var(--text-muted); }
 
   .tpl-manage-grid { display:grid; grid-template-columns:1fr; gap:24px; }
   @media(min-width:800px){ .tpl-manage-grid { grid-template-columns:1fr 2fr; } }
-  .tpl-mini-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-  .tpl-mini { border:1px solid #e5e5e5; border-radius:12px; overflow:hidden; background:#fff; }
-  .tpl-mini-cover { height:70px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; }
-  .tpl-mini-info { padding:10px 12px; display:flex; align-items:center; justify-content:space-between; }
-  .tpl-mini-info button { background:none; border:none; color:#a3a3a3; cursor:pointer; }
-  .tpl-mini-info button:hover { color:#f43f5e; }
+  .tpl-mini-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .tpl-mini { border:1px solid var(--border-color); border-radius:14px; overflow:hidden; background:var(--bg-card); }
+  .tpl-mini-cover { height:80px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; }
+  .tpl-mini-info { padding:12px 14px; display:flex; align-items:center; justify-content:space-between; }
+  .tpl-mini-info button { background:none; border:none; color:var(--text-muted); cursor:pointer; }
+  .tpl-mini-info button:hover { color:var(--accent-rose); }
 
-  .toast { position:fixed; top:70px; right:16px; z-index:50; background:#171717; color:#fff; font-size:0.85rem; padding:10px 18px; border-radius:10px; box-shadow:0 6px 16px rgba(0,0,0,0.2); }
-  .empty-note { font-size:0.85rem; color:#8a8a8a; }
+  .toast { position:fixed; top:80px; right:20px; z-index:50; background:var(--text-primary); color:var(--bg-main); font-size:0.85rem; font-weight:600; padding:12px 20px; border-radius:12px; box-shadow:var(--shadow-md); animation: fadeInUp 0.3s ease; }
+  .empty-note { font-size:0.85rem; color:var(--text-muted); }
+  code { background:var(--bg-subtle); padding:2px 6px; border-radius:6px; font-size:0.85em; border:1px solid var(--border-color); }
 </style>
 </head>
 <body>
@@ -223,24 +322,79 @@
 
 const CATEGORIES = ["Pernikahan","Akikah","Ulang Tahun","Khitanan","Syukuran"];
 
+const FORMAT_PRESETS = {
+  "Pernikahan": {
+    eventTitle: "The Wedding of",
+    mainNamesLabel: "Nama Panggilan Mempelai (Wanita & Pria)",
+    mainNamesPlaceholder: "Sari & Andi",
+    personALabel: "Mempelai Wanita & Orang Tua",
+    personAPlaceholder: "Sari, S.E. — Putri dari Bapak [Nama Ayah] & Ibu [Nama Ibu]",
+    personBLabel: "Mempelai Pria & Orang Tua",
+    personBPlaceholder: "Andi, S.T. — Putra dari Bapak [Nama Ayah] & Ibu [Nama Ibu]",
+    quote: "Assalamu’alaikum Warahmatullahi Wabarakatuh / Salam Sejahtera,\nTanpa mengurangi rasa hormat, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri hari bahagia kami."
+  },
+  "Ulang Tahun": {
+    eventTitle: "Birthday Celebration",
+    mainNamesLabel: "Nama Anak / Penyelenggara & Umur",
+    mainNamesPlaceholder: "Budi's 5th Birthday",
+    personALabel: "Penyelenggara / Yang Berulang Tahun",
+    personAPlaceholder: "Budi — Putra dari Bapak [Nama Ayah] & Ibu [Nama Ibu]",
+    personBLabel: "Dresscode Pesta",
+    personBPlaceholder: "Putih / Kasual",
+    quote: "Halo Teman-teman!\nDatang dan meriahkan pesta ulang tahunku ya! Kehadiran kalian akan membuat hari spesialku jadi lebih seru!"
+  },
+  "Akikah": {
+    eventTitle: "Tasyakuran Aqiqah",
+    mainNamesLabel: "Nama Lengkap Bayi",
+    mainNamesPlaceholder: "Anindya Putri",
+    personALabel: "Profil Bayi & Urutan Anak",
+    personAPlaceholder: "Putri Pertama kami — Lahir pada [Hari, Tanggal Lahir]",
+    personBLabel: "Nama Kedua Orang Tua",
+    personBPlaceholder: "Bapak [Nama Ayah] & Ibu [Nama Ibu]",
+    quote: "Assalamu’alaikum Warahmatullahi Wabarakatuh\nAlhamdulillah, telah lahir dengan selamat putri/putra kami. Sebagai wujud rasa syukur, kami mengundang Bapak/Ibu/Saudara/i untuk hadir dalam acara tasyakuran aqiqah dan doa bersama."
+  },
+  "Khitanan": {
+    eventTitle: "Walimatul Khitan",
+    mainNamesLabel: "Nama Lengkap Anak",
+    mainNamesPlaceholder: "Rizky Pratama",
+    personALabel: "Profil Anak & Doa",
+    personAPlaceholder: "Semoga menjadi anak saleh & berbakti",
+    personBLabel: "Nama Kedua Orang Tua",
+    personBPlaceholder: "Putra dari Bapak [Nama Ayah] & Ibu [Nama Ibu]",
+    quote: "Assalamu’alaikum Warahmatullahi Wabarakatuh\nDengan memohon rahmat dan rida Allah SWT, kami bermaksud menyelenggarakan acara syukuran khitanan putra kami."
+  },
+  "Syukuran": {
+    eventTitle: "Tasyakuran / Syukuran",
+    mainNamesLabel: "Jenis Syukuran",
+    mainNamesPlaceholder: "Rumah Baru / Kelulusan Wisuda",
+    personALabel: "Nama Penyelenggara / Sohibul Hajat",
+    personAPlaceholder: "Keluarga [Nama Kepala Keluarga]",
+    personBLabel: "Keterangan Momen",
+    personBPlaceholder: "Syukuran Menempati Rumah Baru",
+    quote: "Assalamu’alaikum Warahmatullahi Wabarakatuh / Salam Sejahtera,\nAtas limpahan rahmat dan rezeki yang telah Allah SWT berikan, kami bermaksud menggelar acara syukuran. Oleh karena itu, kami mengharapkan kehadiran Bapak/Ibu/Saudara/i."
+  }
+};
+
 const FONT_FAMILIES = {
   elegant: "Georgia, 'Times New Roman', serif",
-  modern: "'Poppins', Arial, sans-serif",
+  modern: "'Plus Jakarta Sans', Arial, sans-serif",
   classic: "Georgia, serif",
 };
 
 const INITIAL_TEMPLATES = [
-  { id:"t1", name:"Rosé Elegance", category:"Pernikahan", price:75000, primary:"#928573", secondary:"#7a6e5d", bg:"#fdf9f6" },
-  { id:"t2", name:"Zaitun Sederhana", category:"Pernikahan", price:65000, primary:"#5c6b4a", secondary:"#3f4a34", bg:"#f6f5ee" },
-  { id:"t3", name:"Kelapa Muda", category:"Akikah", price:45000, primary:"#3f7d68", secondary:"#2f5d50", bg:"#f3f8f1" },
-  { id:"t4", name:"Balon Ceria", category:"Ulang Tahun", price:40000, primary:"#c76b84", secondary:"#5aa9e6", bg:"#fff6f2" },
-  { id:"t5", name:"Padi Emas", category:"Khitanan", price:45000, primary:"#a97a3f", secondary:"#2f4858", bg:"#fbf6ec" },
-  { id:"t6", name:"Syukur Sederhana", category:"Syukuran", price:40000, primary:"#6a6a8f", secondary:"#4a4a68", bg:"#f5f4fa" },
+  { id:"t1", name:"Rosé Elegance", category:"Pernikahan", price:75000, primary:"#928573", secondary:"#7a6e5d", bg:"#fdf9f6", font:"elegant", layout:"klasik", photo:null },
+  { id:"t2", name:"Zaitun Sederhana", category:"Pernikahan", price:65000, primary:"#5c6b4a", secondary:"#3f4a34", bg:"#f6f5ee", font:"elegant", layout:"minimalis", photo:null },
+  { id:"t3", name:"Kelapa Muda", category:"Akikah", price:45000, primary:"#3f7d68", secondary:"#2f5d50", bg:"#f3f8f1", font:"modern", layout:"modern", photo:null },
+  { id:"t4", name:"Balon Ceria", category:"Ulang Tahun", price:40000, primary:"#c76b84", secondary:"#5aa9e6", bg:"#fff6f2", font:"modern", layout:"modern", photo:null },
+  { id:"t5", name:"Padi Emas", category:"Khitanan", price:45000, primary:"#a97a3f", secondary:"#2f4858", bg:"#fbf6ec", font:"classic", layout:"klasik", photo:null },
+  { id:"t6", name:"Syukur Sederhana", category:"Syukuran", price:40000, primary:"#6a6a8f", secondary:"#4a4a68", bg:"#f5f4fa", font:"elegant", layout:"minimalis", photo:null },
 ];
 
 function emptyContent(tpl){
+  const preset = FORMAT_PRESETS[tpl.category] || FORMAT_PRESETS["Pernikahan"];
   return {
-    eventTitle: tpl.category,
+    categoryType: tpl.category,
+    eventTitle: preset.eventTitle,
     mainNames: "",
     personA: "",
     personB: "",
@@ -249,8 +403,9 @@ function emptyContent(tpl){
     venueName: "",
     venueAddress: "",
     mapsQuery: "",
-    quote: "Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir.",
-    photos: [],
+    extraEvents: [],
+    quote: preset.quote,
+    photos: tpl.photo ? [tpl.photo] : [],
     music: "",
     bankName: "",
     bankAccountNumber: "",
@@ -258,8 +413,8 @@ function emptyContent(tpl){
     primary: tpl.primary,
     secondary: tpl.secondary,
     bg: tpl.bg,
-    font: "elegant",
-    layout: "klasik",
+    font: tpl.font || "elegant",
+    layout: tpl.layout || "klasik",
   };
 }
 
@@ -270,6 +425,7 @@ const esc = s => (s||"").toString().replace(/[&<>"']/g, m => ({"&":"&amp;","<":"
 /* =============== STATE =============== */
 
 const state = {
+  theme: "light",
   role: "customer",
   view: "home",
   templates: JSON.parse(JSON.stringify(INITIAL_TEMPLATES)),
@@ -280,11 +436,16 @@ const state = {
   payMethod: "qris",
   reuseMode: false,
   adminTab: "dashboard",
+  massGuests: [],
+  massTemplate: "",
 };
 
-// preview-only ephemeral UI state (tidak ikut ke-render ulang saat mengetik)
+// preview-only ephemeral UI state
 const previewState = { opened:false, rsvpSent:false, rsvpName:"", copied:false };
 let countdownTimer = null;
+
+// draft desain template super admin
+let draftTemplate = null;
 
 function getActiveInvite(){ return state.invitations.find(i=>i.id===state.activeInviteId); }
 function getActiveTpl(){ return state.templates.find(t=>t.id===state.activeTplId); }
@@ -296,6 +457,12 @@ function showToast(msg){
   el.style.display = "block";
   clearTimeout(window._toastTimer);
   window._toastTimer = setTimeout(()=>{ el.style.display="none"; }, 2200);
+}
+
+function toggleTheme(){
+  state.theme = state.theme === "light" ? "dark" : "light";
+  document.documentElement.setAttribute("data-theme", state.theme);
+  render();
 }
 
 /* =============== ACTIONS =============== */
@@ -349,7 +516,16 @@ function resetPreviewState(){
   previewState.copied = false;
 }
 
-// update satu field konten undangan tanpa render ulang seluruh form (agar fokus input tidak hilang)
+function onCategoryChange(newCat){
+  const inv = getActiveInvite();
+  if(!inv) return;
+  inv.content.categoryType = newCat;
+  const preset = FORMAT_PRESETS[newCat] || FORMAT_PRESETS["Pernikahan"];
+  inv.content.eventTitle = preset.eventTitle;
+  inv.content.quote = preset.quote;
+  render();
+}
+
 function onFieldInput(field, value){
   const inv = getActiveInvite();
   if(!inv) return;
@@ -398,6 +574,46 @@ function renderPhotoThumbs(){
   if(fileInput) fileInput.disabled = inv.content.photos.length >= 5;
 }
 
+function addExtraEvent(){
+  const inv = getActiveInvite();
+  inv.content.extraEvents.push({ id: slugify(), title: "", date: "", time: "", venueName: "", venueAddress: "", mapsQuery: "" });
+  renderExtraEventsList();
+  renderPreviewOnly();
+}
+function removeExtraEvent(id){
+  const inv = getActiveInvite();
+  inv.content.extraEvents = inv.content.extraEvents.filter(e => e.id !== id);
+  renderExtraEventsList();
+  renderPreviewOnly();
+}
+function updateExtraEventField(id, field, value){
+  const inv = getActiveInvite();
+  const ev = inv.content.extraEvents.find(e => e.id === id);
+  if(!ev) return;
+  ev[field] = value;
+  renderPreviewOnly();
+}
+function renderExtraEventsList(){
+  const inv = getActiveInvite();
+  const wrap = document.getElementById("extra-events-list");
+  if(!wrap || !inv) return;
+  const events = inv.content.extraEvents;
+  wrap.innerHTML = events.length === 0 ? "" : events.map((ev,idx) => `
+    <div class="extra-event-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px">
+        <input class="in" style="font-weight:600" placeholder="Nama acara, contoh: Resepsi / Potong Rambut" value="${esc(ev.title)}" oninput="updateExtraEventField('${ev.id}','title',this.value)">
+        <button onclick="removeExtraEvent('${ev.id}')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;flex-shrink:0"><i class="fa-solid fa-trash"></i></button>
+      </div>
+      <div class="grid-2">
+        <label class="field"><span>Tanggal</span><input type="date" class="in" value="${ev.date}" oninput="updateExtraEventField('${ev.id}','date',this.value)"></label>
+        <label class="field"><span>Waktu</span><input type="time" class="in" value="${ev.time}" oninput="updateExtraEventField('${ev.id}','time',this.value)"></label>
+      </div>
+      <label class="field"><span>Nama Tempat</span><input class="in" value="${esc(ev.venueName)}" oninput="updateExtraEventField('${ev.id}','venueName',this.value)"></label>
+      <label class="field"><span>Alamat</span><input class="in" value="${esc(ev.venueAddress)}" oninput="updateExtraEventField('${ev.id}','venueAddress',this.value)"></label>
+      <label class="field"><span>Cari di Google Maps</span><input class="in" value="${esc(ev.mapsQuery)}" placeholder="Contoh: Gedung A" oninput="updateExtraEventField('${ev.id}','mapsQuery',this.value)"></label>
+    </div>`).join("");
+}
+
 function setPayMethod(m){ state.payMethod = m; renderPaymentMethods(); }
 function renderPaymentMethods(){
   const wrap = document.getElementById("pay-methods");
@@ -410,8 +626,8 @@ function renderPaymentMethods(){
   wrap.innerHTML = methods.map(m=>`
     <label class="pay-method ${state.payMethod===m.id?'active':''}" onclick="setPayMethod('${m.id}')">
       <input type="radio" ${state.payMethod===m.id?'checked':''} />
-      <i class="fa-solid fa-wallet"></i>
-      <span style="font-size:0.85rem">${m.label}</span>
+      <i class="fa-solid fa-wallet" style="color:var(--accent-rose)"></i>
+      <span style="font-size:0.85rem;font-weight:600">${m.label}</span>
     </label>`).join("");
 }
 
@@ -451,10 +667,17 @@ function render(){
   switch(state.view){
     case "home": root.innerHTML = renderHome(); break;
     case "gallery": root.innerHTML = renderGallery(); break;
-    case "editor": root.innerHTML = renderEditor(); startCountdown(); renderPhotoThumbs(); break;
+    case "editor": 
+      root.innerHTML = renderEditor(); 
+      startCountdown(); 
+      renderPhotoThumbs(); 
+      renderExtraEventsList(); 
+      bindPhoneScrollAnimation(); 
+      break;
     case "payment": root.innerHTML = renderPayment(); renderPaymentMethods(); break;
     case "success": root.innerHTML = renderSuccess(); break;
     case "myInvites": root.innerHTML = renderMyInvites(); break;
+    case "massSend": root.innerHTML = renderMassSend(); break;
     default: root.innerHTML = renderHome();
   }
 }
@@ -464,9 +687,14 @@ function renderTopbar(){
   <div class="topbar">
     <div class="container topbar-inner">
       <button class="brand" onclick="setRole('customer')"><i class="fa-solid fa-heart"></i> Undangan<b>Digital</b></button>
-      <div class="role-switch">
-        <button class="role-btn ${state.role==='customer'?'active':''}" onclick="setRole('customer')">Customer</button>
-        <button class="role-btn ${state.role==='admin'?'active':''}" onclick="setRole('admin')"><i class="fa-solid fa-shield-halved"></i> Admin</button>
+      <div class="topbar-actions">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Ganti Mode Gelap/Terang">
+          <i class="fa-solid ${state.theme==='light'?'fa-moon':'fa-sun'}"></i>
+        </button>
+        <div class="role-switch">
+          <button class="role-btn ${state.role==='customer'?'active':''}" onclick="setRole('customer')">Customer</button>
+          <button class="role-btn ${state.role==='admin'?'active':''}" onclick="setRole('admin')"><i class="fa-solid fa-shield-halved"></i> Admin</button>
+        </div>
       </div>
     </div>
   </div>`;
@@ -510,17 +738,25 @@ function renderGallery(){
   <div class="container page">
     <button class="btn-link" onclick="goto('${state.reuseMode ? 'myInvites' : 'home'}')"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
     ${state.reuseMode ? `<div class="reuse-banner">Pilih template baru untuk acara berikutnya. Undangan ini sudah lunas, jadi tidak perlu bayar lagi.</div>` : ""}
-    <h2 class="cursive" style="font-size:2rem;margin-bottom:16px;">Pilih Template</h2>
+    <h2 class="cursive" style="font-size:2.2rem;margin-bottom:16px;">Pilih Template</h2>
     <div class="cat-tabs">
       ${["Semua",...CATEGORIES].map(c=>`<button class="cat-btn ${state.filterCat===c?'active':''}" onclick="setFilterCat('${c}')">${c}</button>`).join("")}
     </div>
     <div class="tpl-grid">
-      ${list.map(t=>`
+      ${list.map(t=>{
+        const hasPhoto = !!t.photo;
+        const coverStyle = hasPhoto
+          ? `background-image:linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)), url('${t.photo}');background-size:cover;background-position:center;`
+          : `background:${t.bg};`;
+        const catColor = hasPhoto ? "#fff" : t.secondary;
+        const nameColor = hasPhoto ? "#fff" : t.primary;
+        const heartColor = hasPhoto ? "#fff" : t.secondary;
+        return `
         <div class="tpl-card">
-          <div class="tpl-cover" style="background:${t.bg}">
-            <p class="cat" style="color:${t.secondary}">${t.category}</p>
-            <p class="name cursive" style="color:${t.primary}">${esc(t.name)}</p>
-            <i class="fa-solid fa-heart" style="color:${t.secondary};margin-top:6px"></i>
+          <div class="tpl-cover" style="${coverStyle}">
+            <p class="cat" style="color:${catColor}">${t.category}</p>
+            <p class="name cursive" style="color:${nameColor}">${esc(t.name)}</p>
+            <i class="fa-solid fa-heart" style="color:${heartColor};margin-top:6px"></i>
           </div>
           <div class="tpl-info">
             <span class="price">${rupiah(t.price)}</span>
@@ -528,7 +764,8 @@ function renderGallery(){
               ${state.reuseMode ? "Pakai untuk acara ini" : "Coba & Edit"}
             </button>
           </div>
-        </div>`).join("")}
+        </div>`;
+      }).join("")}
     </div>
   </div>`;
 }
@@ -538,9 +775,12 @@ function renderGallery(){
 function renderEditor(){
   const inv = getActiveInvite();
   const c = inv.content;
+  const currentCat = c.categoryType || "Pernikahan";
+  const preset = FORMAT_PRESETS[currentCat] || FORMAT_PRESETS["Pernikahan"];
+
   return `
   <div class="container page">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
       <button class="btn-link" style="margin:0" onclick="goto('${inv.status==='paid' ? 'myInvites' : 'gallery'}')"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
       ${inv.status === "paid"
         ? `<span class="badge-paid"><i class="fa-solid fa-check"></i> Sudah Lunas — edit sepuasnya</span>`
@@ -550,25 +790,42 @@ function renderEditor(){
     <div class="editor-grid">
       <div class="stack">
 
+        <!-- PILIHAN KATEGORI ACARA DENGAN FORM OTOMATIS -->
+        <div class="card" style="border: 2px solid var(--accent-rose)">
+          <p class="section-title"><i class="fa-solid fa-sliders"></i> Format Template Acara</p>
+          <label class="field"><span>Pilih Jenis Acara (Formulir Pengisian Akan Sesuaikan Otomatis)</span>
+            <select class="in" style="font-weight:700;color:var(--accent-rose)" onchange="onCategoryChange(this.value)">
+              ${CATEGORIES.map(cat => `<option value="${cat}" ${currentCat===cat?'selected':''}>Format ${cat}</option>`).join("")}
+            </select>
+          </label>
+        </div>
+
         <div class="card">
-          <p class="section-title"><i class="fa-solid fa-list-check"></i> Informasi Acara</p>
-          <label class="field"><span>Judul Acara</span><input class="in" value="${esc(c.eventTitle)}" oninput="onFieldInput('eventTitle', this.value)"></label>
-          <label class="field"><span>Nama Utama (ditampilkan besar di sampul)</span><input class="in" value="${esc(c.mainNames)}" placeholder="Contoh: Andi & Sari" oninput="onFieldInput('mainNames', this.value)"></label>
+          <p class="section-title"><i class="fa-solid fa-list-check"></i> Isian Form ${esc(currentCat)}</p>
+          <label class="field"><span>Sub-Judul / Label Acara</span><input class="in" value="${esc(c.eventTitle)}" oninput="onFieldInput('eventTitle', this.value)"></label>
+          <label class="field"><span>${esc(preset.mainNamesLabel)}</span><input class="in" value="${esc(c.mainNames)}" placeholder="${esc(preset.mainNamesPlaceholder)}" oninput="onFieldInput('mainNames', this.value)"></label>
           <div class="grid-2">
-            <label class="field"><span>Nama A + orang tua</span><input class="in" value="${esc(c.personA)}" placeholder="Andi, S.T. — Putra Bpk/Ibu ..." oninput="onFieldInput('personA', this.value)"></label>
-            <label class="field"><span>Nama B + orang tua</span><input class="in" value="${esc(c.personB)}" placeholder="Sari, S.E. — Putri Bpk/Ibu ..." oninput="onFieldInput('personB', this.value)"></label>
+            <label class="field"><span>${esc(preset.personALabel)}</span><input class="in" value="${esc(c.personA)}" placeholder="${esc(preset.personAPlaceholder)}" oninput="onFieldInput('personA', this.value)"></label>
+            <label class="field"><span>${esc(preset.personBLabel)}</span><input class="in" value="${esc(c.personB)}" placeholder="${esc(preset.personBPlaceholder)}" oninput="onFieldInput('personB', this.value)"></label>
           </div>
           <div class="grid-2">
-            <label class="field"><span>Tanggal</span><input type="date" class="in" value="${c.date}" oninput="onFieldInput('date', this.value)"></label>
-            <label class="field"><span>Waktu</span><input type="time" class="in" value="${c.time}" oninput="onFieldInput('time', this.value)"></label>
+            <label class="field"><span>Tanggal Acara</span><input type="date" class="in" value="${c.date}" oninput="onFieldInput('date', this.value)"></label>
+            <label class="field"><span>Waktu Mulai</span><input type="time" class="in" value="${c.time}" oninput="onFieldInput('time', this.value)"></label>
           </div>
         </div>
 
         <div class="card">
-          <p class="section-title"><i class="fa-solid fa-location-dot"></i> Lokasi</p>
-          <label class="field"><span>Nama Tempat</span><input class="in" value="${esc(c.venueName)}" oninput="onFieldInput('venueName', this.value)"></label>
-          <label class="field"><span>Alamat Lengkap</span><input class="in" value="${esc(c.venueAddress)}" oninput="onFieldInput('venueAddress', this.value)"></label>
-          <label class="field"><span>Cari di Google Maps (nama tempat/alamat)</span><input class="in" value="${esc(c.mapsQuery)}" placeholder="Contoh: Gedung Serba Guna Loa Janan" oninput="onFieldInput('mapsQuery', this.value)"></label>
+          <p class="section-title"><i class="fa-solid fa-location-dot"></i> Lokasi Acara Utama</p>
+          <label class="field"><span>Nama Tempat / Gedung / Rumah</span><input class="in" value="${esc(c.venueName)}" placeholder="Contoh: Gedung Serba Guna / Rumah" oninput="onFieldInput('venueName', this.value)"></label>
+          <label class="field"><span>Alamat Lengkap</span><input class="in" value="${esc(c.venueAddress)}" placeholder="Jalan, RT/RW, Kecamatan, Kota" oninput="onFieldInput('venueAddress', this.value)"></label>
+          <label class="field"><span>Cari di Google Maps</span><input class="in" value="${esc(c.mapsQuery)}" placeholder="Contoh: Gedung Serba Guna Jakarta" oninput="onFieldInput('mapsQuery', this.value)"></label>
+        </div>
+
+        <div class="card">
+          <p class="section-title"><i class="fa-solid fa-layer-group"></i> Rangkaian Acara Tambahan (Opsional)</p>
+          <p style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:12px">Punya lebih dari satu sesi? Contoh: Pisahkan <b>Akad Nikah</b> & <b>Resepsi</b>, atau <b>Syukuran & Potong Rambut</b>.</p>
+          <div id="extra-events-list"></div>
+          <button class="btn btn-outline btn-block" onclick="addExtraEvent()"><i class="fa-solid fa-plus"></i> Tambah Acara Sesi Lain</button>
         </div>
 
         <div class="card">
@@ -581,24 +838,24 @@ function renderEditor(){
         </div>
 
         <div class="card">
-          <p class="section-title"><i class="fa-solid fa-sparkles"></i> Kata Sambutan</p>
-          <label class="field"><span>Ucapan / Quote</span><textarea class="in" rows="3" oninput="onFieldInput('quote', this.value)">${esc(c.quote)}</textarea></label>
+          <p class="section-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Kata Sambutan / Doa / Pesan</p>
+          <label class="field"><span>Ucapan Sambutan (Disesuaikan Format Kategori)</span><textarea class="in" rows="4" oninput="onFieldInput('quote', this.value)">${esc(c.quote)}</textarea></label>
         </div>
 
         <div class="card">
-          <p class="section-title"><i class="fa-solid fa-gift"></i> Amplop / Hadiah Digital</p>
-          <label class="field"><span>Nama Bank / E-Wallet</span><input class="in" value="${esc(c.bankName)}" placeholder="Contoh: BCA" oninput="onFieldInput('bankName', this.value)"></label>
+          <p class="section-title"><i class="fa-solid fa-gift"></i> Amplop / Hadiah Digital / RSVP</p>
+          <label class="field"><span>Nama Bank / E-Wallet / No WA RSVP</span><input class="in" value="${esc(c.bankName)}" placeholder="Contoh: BCA / DANA / WA: 08123..." oninput="onFieldInput('bankName', this.value)"></label>
           <div class="grid-2">
-            <label class="field"><span>No. Rekening</span><input class="in" value="${esc(c.bankAccountNumber)}" oninput="onFieldInput('bankAccountNumber', this.value)"></label>
+            <label class="field"><span>No. Rekening / No. HP</span><input class="in" value="${esc(c.bankAccountNumber)}" oninput="onFieldInput('bankAccountNumber', this.value)"></label>
             <label class="field"><span>Atas Nama</span><input class="in" value="${esc(c.bankAccountHolder)}" oninput="onFieldInput('bankAccountHolder', this.value)"></label>
           </div>
         </div>
 
         <div class="card">
-          <p class="section-title"><i class="fa-solid fa-palette"></i> Tampilan</p>
+          <p class="section-title"><i class="fa-solid fa-palette"></i> Tampilan Tema</p>
           <div class="grid-2">
-            <label class="field"><span>Warna Utama</span><input type="color" class="in" style="height:40px" value="${c.primary}" oninput="onFieldInput('primary', this.value)"></label>
-            <label class="field"><span>Warna Aksen</span><input type="color" class="in" style="height:40px" value="${c.secondary}" oninput="onFieldInput('secondary', this.value)"></label>
+            <label class="field"><span>Warna Utama</span><input type="color" class="in" style="height:42px" value="${c.primary}" oninput="onFieldInput('primary', this.value)"></label>
+            <label class="field"><span>Warna Aksen</span><input type="color" class="in" style="height:42px" value="${c.secondary}" oninput="onFieldInput('secondary', this.value)"></label>
           </div>
           <label class="field"><span>Font</span>
             <select class="in" onchange="onFieldInput('font', this.value)">
@@ -619,7 +876,7 @@ function renderEditor(){
       </div>
 
       <div>
-        <p class="preview-label">Pratinjau langsung</p>
+        <p class="preview-label">Pratinjau langsung (Scroll HP untuk Animasi)</p>
         <div id="preview-container">${renderPhonePreview(c)}</div>
       </div>
     </div>
@@ -632,9 +889,10 @@ function renderPreviewOnly(){
   if(!wrap || !inv) return;
   wrap.innerHTML = renderPhonePreview(inv.content);
   startCountdown();
+  bindPhoneScrollAnimation();
 }
 
-/* =============== PHONE PREVIEW =============== */
+/* =============== PHONE PREVIEW (WITH ANIMATION CLASSES) =============== */
 
 function renderPhonePreview(c){
   const fontFamily = FONT_FAMILIES[c.font] || FONT_FAMILIES.elegant;
@@ -647,7 +905,7 @@ function renderPhonePreview(c){
     : "Tanggal acara";
 
   const personsHtml = (c.personA || c.personB) ? `
-    <div class="p-persons">
+    <div class="p-persons animate-on-scroll">
       ${c.personA ? `<div class="p-person"><p class="pname cursive" style="color:${c.primary}">${esc(c.personA.split("—")[0])}</p><p class="prole">${esc(c.personA.split("—")[1]||"")}</p></div>` : ""}
       ${(c.personA && c.personB) ? `<span class="p-amp cursive" style="color:${c.secondary}">&amp;</span>` : ""}
       ${c.personB ? `<div class="p-person"><p class="pname cursive" style="color:${c.primary}">${esc(c.personB.split("—")[0])}</p><p class="prole">${esc(c.personB.split("—")[1]||"")}</p></div>` : ""}
@@ -655,17 +913,36 @@ function renderPhonePreview(c){
 
   const galleryHtml = c.photos.length > 0 ? `
     <div class="gallery-grid">
-      ${c.photos.map((p,i)=>`<div class="${i===0?'g-large':'g-item'}"><img src="${p}"></div>`).join("")}
-    </div>` : `<div class="gallery-empty"><i class="fa-regular fa-image"></i> Belum ada foto diunggah</div>`;
+      ${c.photos.map((p,i)=>`<div class="${i===0?'g-large':'g-item'} animate-zoom"><img src="${p}"></div>`).join("")}
+    </div>` : `<div class="gallery-empty animate-on-scroll"><i class="fa-regular fa-image"></i> Belum ada foto diunggah</div>`;
 
   const mapsHtml = c.mapsQuery ? `
-    <div class="maps-embed" style="border:1px solid ${c.secondary}55">
+    <div class="maps-embed animate-on-scroll" style="border:1px solid ${c.secondary}55">
       <iframe src="https://www.google.com/maps?q=${encodeURIComponent(c.mapsQuery)}&output=embed" loading="lazy"></iframe>
     </div>` : "";
 
+  const extraEventsHtml = (c.extraEvents || []).map(ev => {
+    const evDate = ev.date
+      ? new Date(ev.date + "T00:00:00").toLocaleDateString("id-ID", { weekday:"long", year:"numeric", month:"long", day:"numeric" })
+      : "";
+    const evMaps = ev.mapsQuery ? `
+      <div class="maps-embed" style="border:1px solid ${c.secondary}55">
+        <iframe src="https://www.google.com/maps?q=${encodeURIComponent(ev.mapsQuery)}&output=embed" loading="lazy"></iframe>
+      </div>` : "";
+    return `
+      <div class="event-card animate-on-scroll" style="background:${c.bg};border:1px solid ${c.secondary}33;margin-top:14px">
+        <p class="ename cursive" style="color:${c.primary}">${esc(ev.title) || "Acara Sesi Lain"}</p>
+        ${evDate ? `<p class="erow"><i class="fa-regular fa-calendar"></i> ${evDate}</p>` : ""}
+        <p class="erow"><i class="fa-regular fa-clock"></i> ${esc(ev.time) || "Waktu acara"} WIB</p>
+        <p class="erow" style="font-weight:600">${esc(ev.venueName) || "Nama tempat"}</p>
+        <p class="eaddr">${esc(ev.venueAddress) || "Alamat"}</p>
+        ${evMaps}
+      </div>`;
+  }).join("");
+
   const rsvpHtml = previewState.rsvpSent
     ? `<p class="rsvp-thanks" style="color:${c.primary}">Terima kasih ${esc(previewState.rsvpName || "Tamu")}, konfirmasi Anda tersimpan.</p>`
-    : `<div class="rsvp-form">
+    : `<div class="rsvp-form animate-on-scroll">
         <input class="in" placeholder="Nama lengkap" value="${esc(previewState.rsvpName)}" oninput="previewState.rsvpName=this.value">
         <select class="in"><option>1 Orang</option><option>2 Orang</option></select>
         <select class="in"><option>Ya, Saya Akan Hadir</option><option>Maaf, Tidak Bisa Hadir</option></select>
@@ -673,80 +950,107 @@ function renderPhonePreview(c){
       </div>`;
 
   const giftHtml = c.bankAccountNumber ? `
-    <div class="gift-card" style="border:1px solid ${c.secondary}55">
-      <p class="bankname" style="color:${c.primary}">${esc(c.bankName || "Bank")}</p>
+    <div class="gift-card animate-zoom" style="border:1px solid ${c.secondary}55">
+      <p class="bankname" style="color:${c.primary}">${esc(c.bankName || "Bank / E-Wallet")}</p>
       <p class="accnum">${esc(c.bankAccountNumber)}</p>
       <p class="accholder">a.n. ${esc(c.bankAccountHolder || "-")}</p>
-      <button class="btn btn-block" style="background:${c.primary};color:#fff" onclick="previewState.copied=true; copyText('${esc(c.bankAccountNumber)}','Nomor rekening disalin'); renderPreviewOnly()">
-        <i class="fa-solid fa-copy"></i> ${previewState.copied ? "Tersalin!" : "Salin No. Rekening"}
+      <button class="btn btn-block" style="background:${c.primary};color:#fff" onclick="previewState.copied=true; copyText('${esc(c.bankAccountNumber)}','Nomor/Tautan disalin'); renderPreviewOnly()">
+        <i class="fa-solid fa-copy"></i> ${previewState.copied ? "Tersalin!" : "Salin No. Rekening / Kontak"}
       </button>
-    </div>` : `<p style="font-size:0.75rem;opacity:0.5">Belum ada rekening ditambahkan</p>`;
+    </div>` : `<p style="font-size:0.75rem;opacity:0.5">Belum ada rekening/kontak ditambahkan</p>`;
 
   return `
   <div class="phone-frame">
-    <div class="phone-scroll" style="background:${c.bg};color:#2a2a2a;font-family:${fontFamily}">
+    <div class="phone-scroll" id="phone-scroll-element" style="background:${c.bg};color:#2a2a2a;font-family:${fontFamily}">
 
       <div class="p-cover ${previewState.opened ? 'hidden-cover' : ''}" style="background-image:${bgLayer}">
         <p class="kepada">Kepada Yth. Bapak/Ibu/Saudara/i</p>
-        <h1 class="names cursive">${esc(c.mainNames) || "Nama & Nama"}</h1>
-        <p class="desc">Kami mengundang Anda untuk hadir di acara kami.</p>
+        <h1 class="names cursive">${esc(c.mainNames) || "Nama Utama"}</h1>
+        <p class="desc">Kami mengundang Anda untuk hadir di acara bahagia kami.</p>
         <button class="p-open-btn" style="background:${c.primary}" onclick="previewState.opened=true; renderPreviewOnly()"><i class="fa-solid fa-envelope-open"></i> Buka Undangan</button>
       </div>
 
       <section class="p-hero" style="background-image:${bgLayer}">
-        <p class="cat">${esc(c.eventTitle) || "Undangan"}</p>
-        <h2 class="names cursive">${esc(c.mainNames) || "Nama & Nama"}</h2>
-        <p class="date">${formattedDate}</p>
+        <p class="cat animate-on-scroll">${esc(c.eventTitle) || "Undangan"}</p>
+        <h2 class="names cursive animate-zoom">${esc(c.mainNames) || "Nama Utama"}</h2>
+        <p class="date animate-on-scroll">${formattedDate}</p>
       </section>
 
       <section class="p-section">
-        <p class="p-quote">${esc(c.quote)}</p>
+        <p class="p-quote animate-on-scroll" style="white-space: pre-line">${esc(c.quote)}</p>
         ${personsHtml}
       </section>
 
       <section class="p-section" style="background:#fff">
-        <p class="p-title cursive" style="color:${c.primary}">Hitung Mundur</p>
-        <div id="countdown-boxes" class="cd-row" data-date="${c.date}" data-time="${c.time}" style="--primary:${c.primary}">
+        <p class="p-title cursive animate-on-scroll" style="color:${c.primary}">Hitung Mundur</p>
+        <div id="countdown-boxes" class="cd-row animate-zoom" data-date="${c.date}" data-time="${c.time}" style="--primary:${c.primary}">
           ${["Hari","Jam","Menit","Detik"].map(lbl=>`<div class="cd-box" style="background:${c.primary}"><span class="num" data-cd="${lbl}">00</span><span class="lbl">${lbl}</span></div>`).join("")}
         </div>
         <p id="countdown-over" style="font-size:0.75rem;color:#8a8a8a;display:none;margin-top:8px">Acara telah berlangsung</p>
 
-        <div class="event-card" style="background:${c.bg};border:1px solid ${c.secondary}33">
+        <div class="event-card animate-on-scroll" style="background:${c.bg};border:1px solid ${c.secondary}33">
           <p class="ename cursive" style="color:${c.primary}">${esc(c.eventTitle) || "Acara"}</p>
           <p class="erow"><i class="fa-regular fa-clock"></i> ${esc(c.time) || "Waktu acara"} WIB</p>
           <p class="erow" style="font-weight:600">${esc(c.venueName) || "Nama tempat"}</p>
           <p class="eaddr">${esc(c.venueAddress) || "Alamat lengkap"}</p>
           ${mapsHtml}
         </div>
+        ${extraEventsHtml}
       </section>
 
       <section class="p-section" style="background:${c.bg}">
-        <p class="p-title cursive" style="color:${c.primary}">Momen Bahagia</p>
-        <p class="p-sub">Galeri Foto</p>
+        <p class="p-title cursive animate-on-scroll" style="color:${c.primary}">Momen Bahagia</p>
+        <p class="p-sub animate-on-scroll">Galeri Foto</p>
         ${galleryHtml}
-        ${c.music ? `<p style="margin-top:14px;font-size:0.72rem;opacity:0.7"><i class="fa-solid fa-music"></i> Musik latar terpasang</p>` : ""}
+        ${c.music ? `<p class="animate-on-scroll" style="margin-top:14px;font-size:0.72rem;opacity:0.7"><i class="fa-solid fa-music"></i> Musik latar terpasang</p>` : ""}
       </section>
 
       <section class="p-section" style="background:#fff">
-        <p class="p-title cursive" style="color:${c.primary}">Konfirmasi Kehadiran</p>
-        <p class="p-sub">Mohon isi form di bawah ini</p>
+        <p class="p-title cursive animate-on-scroll" style="color:${c.primary}">Konfirmasi Kehadiran</p>
+        <p class="p-sub animate-on-scroll">Mohon isi form di bawah ini</p>
         ${rsvpHtml}
       </section>
 
       <section class="p-section" style="background:${c.bg}">
-        <p class="p-title cursive" style="color:${c.primary}">Titip Hadiah</p>
-        <p class="p-sub">Amplop Digital</p>
+        <p class="p-title cursive animate-on-scroll" style="color:${c.primary}">Amplop / Hadiah</p>
+        <p class="p-sub animate-on-scroll">Kado Digital</p>
         ${giftHtml}
       </section>
 
-      <footer class="p-footer" style="background:${c.primary}">
+      <footer class="p-footer animate-on-scroll" style="background:${c.primary}">
         <p class="thanks">Terima Kasih Atas Doa & Restu Anda</p>
-        <p class="fname cursive">${esc(c.mainNames) || "Nama & Nama"}</p>
+        <p class="fname cursive">${esc(c.mainNames) || "Nama Utama"}</p>
       </footer>
 
     </div>
     ${previewState.opened ? `<button class="reset-cover" title="Lihat sampul lagi" onclick="previewState.opened=false; renderPreviewOnly()"><i class="fa-solid fa-arrow-rotate-left" style="font-size:11px"></i></button>` : ""}
   </div>`;
+}
+
+/* =============== SCRIPT ANIMASI SCROLL =============== */
+
+function bindPhoneScrollAnimation(){
+  const phoneScroll = document.getElementById("phone-scroll-element");
+  if(!phoneScroll) return;
+
+  function triggerCheck(){
+    const elements = phoneScroll.querySelectorAll(".animate-on-scroll, .animate-zoom");
+    const containerHeight = phoneScroll.clientHeight;
+
+    elements.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      const parentRect = phoneScroll.getBoundingClientRect();
+      const topRelativeToContainer = rect.top - parentRect.top;
+
+      if(topRelativeToContainer < containerHeight - 40){
+        el.classList.add("visible");
+      }
+    });
+  }
+
+  phoneScroll.removeEventListener("scroll", triggerCheck);
+  phoneScroll.addEventListener("scroll", triggerCheck);
+  setTimeout(triggerCheck, 100);
 }
 
 function startCountdown(){
@@ -792,10 +1096,10 @@ function renderPayment(){
   return `
   <div class="container-sm page">
     <button class="btn-link" onclick="goto('editor')"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
-    <h2 class="cursive" style="font-size:2rem;margin-bottom:4px;">Selesaikan Pembayaran</h2>
-    <p style="font-size:0.85rem;color:#8a8a8a;margin-bottom:20px;">Template undangan • ${rupiah(inv.price)}</p>
+    <h2 class="cursive" style="font-size:2.2rem;margin-bottom:4px;">Selesaikan Pembayaran</h2>
+    <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:24px;">Template undangan • ${rupiah(inv.price)}</p>
     <div id="pay-methods"></div>
-    <div class="pay-note">Ini adalah simulasi pembayaran untuk demo. Pada versi produksi, langkah ini akan terhubung ke payment gateway Indonesia (mis. Midtrans / Xendit) untuk QRIS, Virtual Account, dan e-wallet secara nyata.</div>
+    <div class="pay-note">Ini adalah simulasi pembayaran untuk demo. Pada versi produksi, langkah ini akan terhubung ke payment gateway Indonesia secara nyata.</div>
     <button class="btn btn-dark btn-block" onclick="confirmPayment()">Konfirmasi Pembayaran</button>
   </div>`;
 }
@@ -809,13 +1113,13 @@ function renderSuccess(){
   return `
   <div class="container-sm page" style="text-align:center">
     <div class="success-icon"><i class="fa-solid fa-check"></i></div>
-    <h2 class="cursive" style="font-size:2rem;margin-bottom:6px;">Pembayaran Berhasil</h2>
-    <p style="font-size:0.85rem;color:#8a8a8a;margin-bottom:20px;">Undangan kamu sudah aktif dan siap dibagikan.</p>
+    <h2 class="cursive" style="font-size:2.2rem;margin-bottom:6px;">Pembayaran Berhasil</h2>
+    <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:24px;">Undangan kamu sudah aktif dan siap dibagikan.</p>
     <div class="link-box">
       <span>${link}</span>
       <button onclick="copyText('${link}','Tautan disalin')"><i class="fa-regular fa-copy"></i></button>
     </div>
-    <a href="https://wa.me/?text=${waText}" target="_blank" class="btn btn-emerald btn-block" style="margin-bottom:10px"><i class="fa-brands fa-whatsapp"></i> Bagikan ke WhatsApp</a>
+    <a href="https://wa.me/?text=${waText}" target="_blank" class="btn btn-emerald btn-block" style="margin-bottom:12px"><i class="fa-brands fa-whatsapp"></i> Bagikan ke WhatsApp</a>
     <button class="btn btn-outline btn-block" onclick="goto('myInvites')">Lihat Undangan Saya</button>
   </div>`;
 }
@@ -825,8 +1129,8 @@ function renderSuccess(){
 function renderMyInvites(){
   return `
   <div class="container page">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-      <h2 class="cursive" style="font-size:2rem;">Undangan Saya</h2>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+      <h2 class="cursive" style="font-size:2.2rem;">Undangan Saya</h2>
       <button class="btn btn-dark btn-sm" onclick="goto('gallery')"><i class="fa-solid fa-plus"></i> Buat Baru</button>
     </div>
     ${state.invitations.length === 0 ? `<p class="empty-note">Belum ada undangan. Mulai dari halaman Template.</p>` : ""}
@@ -838,12 +1142,207 @@ function renderMyInvites(){
           <b>${esc(inv.content.mainNames) || "(Belum diisi)"} — ${esc(inv.content.eventTitle)}</b>
           <p>Template: ${tpl ? esc(tpl.name) : "-"} • ${inv.status==='paid'?'Lunas':'Belum dibayar'} • dipakai untuk ${inv.history.length} acara</p>
         </div>
-        <div style="display:flex;gap:8px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn btn-outline btn-sm" onclick="openInvite('${inv.id}')">Edit</button>
-          ${inv.status==='paid' ? `<button class="btn btn-emerald btn-sm" onclick="state.activeInviteId='${inv.id}'; state.reuseMode=true; goto('gallery')"><i class="fa-solid fa-arrows-rotate"></i> Pakai Acara Lain</button>` : ""}
+          ${inv.status==='paid' ? `
+            <button class="btn btn-emerald btn-sm" onclick="state.activeInviteId='${inv.id}'; state.reuseMode=true; goto('gallery')"><i class="fa-solid fa-arrows-rotate"></i> Pakai Acara Lain</button>
+            <button class="btn btn-dark btn-sm" onclick="openMassSend('${inv.id}')"><i class="fa-solid fa-file-import"></i> Kirim Massal</button>
+          ` : ""}
         </div>
       </div>`;
     }).join("")}
+  </div>`;
+}
+
+/* =============== KIRIM UNDANGAN MASSAL =============== */
+
+function defaultMassTemplate(){
+  return "Halo {nama} \uD83D\uDC4B,\nAnda diundang ke acara kami. Silakan lihat undangan digital kami di:\n{link}\n\nMohon konfirmasi kehadiran Anda ya. Terima kasih \uD83D\uDE4F";
+}
+
+function openMassSend(id){
+  state.activeInviteId = id;
+  state.massGuests = [];
+  state.massTemplate = defaultMassTemplate();
+  goto("massSend");
+}
+
+function normalizePhone(raw){
+  let p = (raw||"").toString().trim().replace(/[^0-9+]/g,"");
+  if(!p) return "";
+  if(p.startsWith("+")) p = p.slice(1);
+  if(p.startsWith("0")) p = "62" + p.slice(1);
+  else if(!p.startsWith("62")) p = "62" + p;
+  return p;
+}
+
+function rowsToGuests(rows){
+  if(!rows || rows.length === 0) return [];
+  let startIdx = 0;
+  const firstRowJoined = (rows[0]||[]).join(" ").toLowerCase();
+  if(/nama|name|telp|whatsapp|\bwa\b|phone|no\.?\s*hp/.test(firstRowJoined)){
+    startIdx = 1;
+  }
+  const guests = [];
+  for(let i = startIdx; i < rows.length; i++){
+    const row = rows[i];
+    if(!row) continue;
+    const cells = row.map(c => (c===undefined||c===null) ? "" : c.toString().trim());
+    if(cells.every(c => c === "")) continue;
+
+    let nama = "", telp = "";
+    if(cells.length === 1){
+      nama = cells[0];
+    } else {
+      let phoneIdx = cells.findIndex(c => /^[+0-9][0-9\s\-]{7,}$/.test(c));
+      if(phoneIdx === -1) phoneIdx = cells.length - 1;
+      telp = cells[phoneIdx] || "";
+      const nameCandidates = cells.filter((c, idx) => idx !== phoneIdx && c !== "" && !/^\d+$/.test(c));
+      nama = nameCandidates[0] || cells.find(c => c !== "") || "";
+    }
+    nama = nama.replace(/^\d+[\.\)]\s*/, "").trim();
+    if(!nama) continue;
+    guests.push({ nama, phone: normalizePhone(telp) });
+  }
+  return guests;
+}
+
+function parseExcelFile(file, cb){
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try{
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+      cb(rows);
+    }catch(err){
+      showToast("Gagal membaca file Excel. Pastikan formatnya benar.");
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function parseTextFile(file, cb){
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const text = e.target.result || "";
+    const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+    const rows = lines.map(line => line.split(/[,;\t]/).map(s => s.trim()));
+    cb(rows);
+  };
+  reader.readAsText(file);
+}
+
+function handleGuestFile(input){
+  const file = input.files[0];
+  if(!file) return;
+  const name = file.name.toLowerCase();
+  const onParsed = (rows) => {
+    const guests = rowsToGuests(rows);
+    if(guests.length === 0){
+      showToast("Tidak ada data tamu yang terbaca dari file ini");
+      return;
+    }
+    state.massGuests = guests;
+    renderMassTableOnly();
+    showToast(`${guests.length} tamu berhasil diimport`);
+  };
+  if(name.endsWith(".xlsx") || name.endsWith(".xls")){
+    parseExcelFile(file, onParsed);
+  } else {
+    parseTextFile(file, onParsed);
+  }
+  input.value = "";
+}
+
+function updateMassTemplate(value){
+  state.massTemplate = value;
+  renderMassTableOnly();
+}
+
+function buildMassMessage(invite, guest){
+  const link = `https://undangan.digital/u/${invite.slug}?to=${encodeURIComponent(guest.nama)}`;
+  const message = state.massTemplate.split("{nama}").join(guest.nama).split("{link}").join(link);
+  return { link, message };
+}
+
+function copyMassMessage(i){
+  const inv = getActiveInvite();
+  const g = state.massGuests[i];
+  const { message } = buildMassMessage(inv, g);
+  copyText(message, "Pesan disalin");
+}
+
+function renderMassTableOnly(){
+  const wrap = document.getElementById("mass-table-container");
+  if(!wrap) return;
+  wrap.innerHTML = renderMassTable();
+}
+
+function renderMassTable(){
+  const inv = getActiveInvite();
+  if(state.massGuests.length === 0){
+    return `<p class="empty-note">Belum ada data tamu. Upload file di atas untuk mulai.</p>`;
+  }
+  const terdeteksi = state.massGuests.filter(g=>g.phone).length;
+  return `
+  <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:12px"><b>${state.massGuests.length}</b> tamu terimport • <b>${terdeteksi}</b> nomor WhatsApp terdeteksi</p>
+  <div class="card" style="padding:0;overflow:hidden">
+    <table>
+      <thead><tr><th>#</th><th>Nama</th><th>No. WhatsApp</th><th>Tautan Personal</th><th>Aksi</th></tr></thead>
+      <tbody>
+        ${state.massGuests.map((g,i)=>{
+          const { link, message } = buildMassMessage(inv, g);
+          const waLink = g.phone ? `https://wa.me/${g.phone}?text=${encodeURIComponent(message)}` : "";
+          return `<tr>
+            <td>${i+1}</td>
+            <td>${esc(g.nama)}</td>
+            <td>${g.phone ? esc(g.phone) : `<span style="color:#ef4444;font-size:0.75rem">tidak terdeteksi</span>`}</td>
+            <td style="max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.75rem;color:var(--text-secondary)">${esc(link)}</td>
+            <td>
+              <div style="display:flex;gap:6px">
+                ${g.phone ? `<a class="btn btn-emerald btn-sm" href="${waLink}" target="_blank" rel="noreferrer"><i class="fa-brands fa-whatsapp"></i> Kirim</a>` : ""}
+                <button class="btn btn-outline btn-sm" onclick="copyMassMessage(${i})" title="Salin pesan"><i class="fa-regular fa-copy"></i></button>
+              </div>
+            </td>
+          </tr>`;
+        }).join("")}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function renderMassSend(){
+  const inv = getActiveInvite();
+  const link = `https://undangan.digital/u/${inv.slug}`;
+  return `
+  <div class="container page">
+    <button class="btn-link" onclick="goto('myInvites')"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
+    <h2 class="cursive" style="font-size:2.2rem;margin-bottom:4px;">Kirim Undangan Massal</h2>
+    <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:24px;">${esc(inv.content.mainNames) || inv.slug} — ${link}</p>
+
+    <div class="card" style="margin-bottom:20px">
+      <p class="section-title"><i class="fa-solid fa-file-import"></i> Upload Daftar Tamu</p>
+      <label class="field"><span>File Excel (.xlsx / .xls), CSV, atau TXT</span>
+        <input type="file" accept=".xlsx,.xls,.csv,.txt" class="in" onchange="handleGuestFile(this)">
+      </label>
+      <p style="font-size:0.75rem;color:var(--text-muted)">
+        Kolom yang dikenali: <b>Nama</b> dan <b>No. WhatsApp</b> (contoh: 08123456789). Header otomatis dilewati.
+      </p>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <p class="section-title"><i class="fa-solid fa-message"></i> Template Pesan WhatsApp</p>
+      <textarea class="in" rows="5" oninput="updateMassTemplate(this.value)">${esc(state.massTemplate)}</textarea>
+      <p style="font-size:0.75rem;color:var(--text-muted);margin-top:6px">Gunakan <code>{nama}</code> untuk nama tamu dan <code>{link}</code> untuk tautan undangan personal.</p>
+    </div>
+
+    <div id="mass-table-container">${renderMassTable()}</div>
+
+    <div class="pay-note" style="margin-top:20px">
+      <i class="fa-solid fa-circle-info"></i> Pesan dikirim satu per satu via tombol <b>Kirim</b> untuk mencegah nomor terblokir akibat pengiriman massal otomatis.
+    </div>
   </div>`;
 }
 
@@ -883,7 +1382,7 @@ function renderAdminDashboard(paid, revenue){
     <div class="stat-card"><i class="fa-solid fa-table-cells-large"></i><p class="val">${state.templates.length}</p><p class="lbl">Template Aktif</p></div>
   </div>
   <div class="card">
-    <p style="font-size:0.85rem;font-weight:600;margin-bottom:6px">Pendapatan per Kategori</p>
+    <p style="font-size:0.9rem;font-weight:700;margin-bottom:12px">Pendapatan per Kategori</p>
     <div class="bar-chart">
       ${byCategory.map(b=>`
         <div class="bar-col">
@@ -911,62 +1410,197 @@ function renderAdminTransactions(){
             <td><span class="status-pill ${inv.status==='paid'?'status-paid':'status-draft'}">${inv.status==='paid'?'Lunas':'Belum bayar'}</span></td>
           </tr>`;
         }).join("")}
-        ${state.invitations.length===0 ? `<tr><td colspan="5" style="text-align:center;color:#a3a3a3;padding:32px">Belum ada transaksi</td></tr>` : ""}
+        ${state.invitations.length===0 ? `<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:32px">Belum ada transaksi</td></tr>` : ""}
       </tbody>
     </table>
   </div>`;
 }
 
+function ensureDraftTemplate(){
+  if(!draftTemplate) resetDraftTemplate();
+}
+
+function resetDraftTemplate(){
+  const cat = CATEGORIES[0];
+  draftTemplate = {
+    category: cat,
+    categoryType: cat,
+    eventTitle: cat,
+    mainNames: "Nama & Nama",
+    personA: "", personB: "",
+    date: "", time: "",
+    venueName: "Nama Tempat", venueAddress: "Alamat lengkap acara",
+    mapsQuery: "",
+    quote: "Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir.",
+    photos: [], music: "",
+    bankName: "", bankAccountNumber: "", bankAccountHolder: "",
+    primary: "#928573", secondary: "#7a6e5d", bg: "#fdf9f6",
+    font: "elegant", layout: "klasik",
+  };
+}
+
+function resetDraftDesign(){
+  resetDraftTemplate();
+  render();
+}
+
+function updateDraftField(field, value){
+  draftTemplate[field] = value;
+  if(field === "category") draftTemplate.eventTitle = value;
+  renderDraftPreviewOnly();
+}
+
+function renderDraftPreviewOnly(){
+  const wrap = document.getElementById("tpl-preview-container");
+  if(!wrap) return;
+  wrap.innerHTML = renderPhonePreview(draftTemplate);
+  startCountdown();
+  bindPhoneScrollAnimation();
+}
+
+function uploadDraftPhoto(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    draftTemplate.photos = [reader.result];
+    input.value = "";
+    renderDraftPhotoThumb();
+    renderDraftPreviewOnly();
+  };
+  reader.readAsDataURL(file);
+}
+function removeDraftPhoto(){
+  draftTemplate.photos = [];
+  renderDraftPhotoThumb();
+  renderDraftPreviewOnly();
+}
+function renderDraftPhotoThumb(){
+  const wrap = document.getElementById("draft-photo-thumb");
+  const fileInput = document.getElementById("draft-photo-input");
+  if(!wrap) return;
+  wrap.innerHTML = draftTemplate.photos.length
+    ? `<div class="photo-thumb" style="width:84px;height:84px"><img src="${draftTemplate.photos[0]}"><button onclick="removeDraftPhoto()">✕</button></div>`
+    : "";
+  if(fileInput) fileInput.disabled = draftTemplate.photos.length >= 1;
+}
+
 function renderAdminTemplates(){
+  ensureDraftTemplate();
+  const d = draftTemplate;
   return `
-  <div class="tpl-manage-grid">
-    <div class="card">
-      <p class="section-title"><i class="fa-solid fa-plus"></i> Tambah Template</p>
-      <label class="field"><span>Nama Template</span><input id="new-tpl-name" class="in"></label>
-      <label class="field"><span>Kategori</span>
-        <select id="new-tpl-cat" class="in">${CATEGORIES.map(c=>`<option>${c}</option>`).join("")}</select>
-      </label>
-      <label class="field"><span>Harga (Rp)</span><input id="new-tpl-price" type="number" class="in" value="50000"></label>
-      <div class="grid-2">
-        <label class="field"><span>Warna Utama</span><input id="new-tpl-primary" type="color" class="in" style="height:36px" value="#928573"></label>
-        <label class="field"><span>Warna Aksen</span><input id="new-tpl-secondary" type="color" class="in" style="height:36px" value="#7a6e5d"></label>
+  <div class="card" style="margin-bottom:20px">
+    <p class="section-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Designer Template — publikasikan desain ke katalog customer</p>
+  </div>
+  <div class="editor-grid" style="margin-bottom:36px">
+    <div class="stack">
+      <div class="card">
+        <p class="section-title"><i class="fa-solid fa-tag"></i> Info Template</p>
+        <label class="field"><span>Nama Template</span><input id="new-tpl-name" class="in" placeholder="Contoh: Rosé Elegance"></label>
+        <div class="grid-2">
+          <label class="field"><span>Kategori</span>
+            <select class="in" onchange="updateDraftField('category', this.value)">
+              ${CATEGORIES.map(c=>`<option value="${c}" ${d.category===c?'selected':''}>${c}</option>`).join("")}
+            </select>
+          </label>
+          <label class="field"><span>Harga (Rp)</span><input id="new-tpl-price" type="number" class="in" value="50000"></label>
+        </div>
       </div>
-      <button class="btn btn-dark btn-block" onclick="addTemplate()">Simpan Template</button>
+
+      <div class="card">
+        <p class="section-title"><i class="fa-solid fa-image"></i> Foto Sampul / Hero</p>
+        <label class="field"><span>Upload gambar background (opsional)</span>
+          <input id="draft-photo-input" type="file" accept="image/*" class="in" onchange="uploadDraftPhoto(this)" ${d.photos.length?'disabled':''}>
+        </label>
+        <div id="draft-photo-thumb" class="photo-thumbs"></div>
+      </div>
+
+      <div class="card">
+        <p class="section-title"><i class="fa-solid fa-palette"></i> Warna, Font & Layout</p>
+        <div class="grid-2">
+          <label class="field"><span>Warna Utama</span><input type="color" class="in" style="height:42px" value="${d.primary}" oninput="updateDraftField('primary', this.value)"></label>
+          <label class="field"><span>Warna Aksen</span><input type="color" class="in" style="height:42px" value="${d.secondary}" oninput="updateDraftField('secondary', this.value)"></label>
+        </div>
+        <label class="field"><span>Warna Latar Section</span><input type="color" class="in" style="height:42px" value="${d.bg}" oninput="updateDraftField('bg', this.value)"></label>
+        <label class="field"><span>Font</span>
+          <select class="in" onchange="updateDraftField('font', this.value)">
+            <option value="elegant" ${d.font==='elegant'?'selected':''}>Elegant Serif</option>
+            <option value="modern" ${d.font==='modern'?'selected':''}>Modern Sans</option>
+            <option value="classic" ${d.font==='classic'?'selected':''}>Classic Serif Italic</option>
+          </select>
+        </label>
+        <label class="field"><span>Layout</span>
+          <select class="in" onchange="updateDraftField('layout', this.value)">
+            <option value="klasik" ${d.layout==='klasik'?'selected':''}>Klasik</option>
+            <option value="modern" ${d.layout==='modern'?'selected':''}>Modern</option>
+            <option value="minimalis" ${d.layout==='minimalis'?'selected':''}>Minimalis</option>
+          </select>
+        </label>
+      </div>
+
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-dark btn-block" onclick="publishTemplate()"><i class="fa-solid fa-cloud-arrow-up"></i> Publikasikan Template</button>
+        <button class="btn btn-outline" onclick="resetDraftDesign()" title="Reset desain"><i class="fa-solid fa-rotate-left"></i></button>
+      </div>
     </div>
-    <div class="tpl-mini-grid">
-      ${state.templates.map(t=>`
+
+    <div>
+      <p class="preview-label">Pratinjau Desain</p>
+      <div id="tpl-preview-container">${renderPhonePreview(d)}</div>
+    </div>
+  </div>
+
+  <p class="section-title" style="margin-bottom:16px"><i class="fa-solid fa-layer-group"></i> Template Terpublikasi (${state.templates.length})</p>
+  <div class="tpl-mini-grid">
+    ${state.templates.map(t=>{
+      const hasPhoto = !!t.photo;
+      const coverStyle = hasPhoto
+        ? `background-image:linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url('${t.photo}');background-size:cover;background-position:center;`
+        : `background:${t.bg};`;
+      const nameColor = hasPhoto ? "#fff" : t.primary;
+      return `
         <div class="tpl-mini">
-          <div class="tpl-mini-cover" style="background:${t.bg}"><span class="cursive" style="color:${t.primary}">${esc(t.name)}</span></div>
+          <div class="tpl-mini-cover" style="${coverStyle}"><span class="cursive" style="color:${nameColor}">${esc(t.name)}</span></div>
           <div class="tpl-mini-info">
-            <div><p style="font-size:0.72rem;color:#8a8a8a">${t.category}</p><p style="font-size:0.85rem;font-weight:600">${rupiah(t.price)}</p></div>
+            <div><p style="font-size:0.75rem;color:var(--text-muted)">${t.category}</p><p style="font-size:0.85rem;font-weight:700">${rupiah(t.price)}</p></div>
             <button onclick="removeTemplate('${t.id}')"><i class="fa-solid fa-trash"></i></button>
           </div>
-        </div>`).join("")}
-    </div>
+        </div>`;
+    }).join("")}
   </div>`;
 }
 
-function addTemplate(){
+function publishTemplate(){
   const name = document.getElementById("new-tpl-name").value.trim();
   if(!name){ showToast("Nama template wajib diisi"); return; }
+  const price = Number(document.getElementById("new-tpl-price").value) || 0;
   const tpl = {
     id: slugify(),
     name,
-    category: document.getElementById("new-tpl-cat").value,
-    price: Number(document.getElementById("new-tpl-price").value) || 0,
-    primary: document.getElementById("new-tpl-primary").value,
-    secondary: document.getElementById("new-tpl-secondary").value,
-    bg: "#fdf9f6",
+    category: draftTemplate.category,
+    price,
+    primary: draftTemplate.primary,
+    secondary: draftTemplate.secondary,
+    bg: draftTemplate.bg,
+    font: draftTemplate.font,
+    layout: draftTemplate.layout,
+    photo: draftTemplate.photos[0] || null,
   };
   state.templates.push(tpl);
-  showToast("Template ditambahkan");
+  showToast("Template berhasil dipublikasikan ke katalog customer");
+  resetDraftTemplate();
   render();
 }
 function removeTemplate(id){
   state.templates = state.templates.filter(t=>t.id!==id);
   render();
 }
-function bindAdminExtras(){}
+function bindAdminExtras(){
+  if(state.adminTab === "templates") {
+    renderDraftPhotoThumb();
+    bindPhoneScrollAnimation();
+  }
+}
 
 /* =============== INIT =============== */
 render();
