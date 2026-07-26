@@ -284,8 +284,8 @@
   .invite-row .meta p { font-size:0.75rem; color:var(--text-secondary); margin-top:2px; }
 
   /* ADMIN */
-  .tabs { display:flex; gap:8px; border-bottom:1px solid var(--border-color); margin-bottom:28px; }
-  .tab-btn { display:flex; align-items:center; gap:8px; padding:12px 20px; font-size:0.85rem; font-weight:600; border:none; background:none; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; }
+  .tabs { display:flex; gap:8px; border-bottom:1px solid var(--border-color); margin-bottom:28px; overflow-x:auto; }
+  .tab-btn { display:flex; align-items:center; gap:8px; padding:12px 20px; font-size:0.85rem; font-weight:600; border:none; background:none; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; white-space:nowrap; }
   .tab-btn.active { color:var(--text-primary); border-color:var(--accent-rose); }
   .stat-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-bottom:32px; }
   @media(min-width:700px){ .stat-grid { grid-template-columns:repeat(4,1fr); } }
@@ -306,6 +306,9 @@
   .status-pill { font-size:0.7rem; font-weight:600; padding:4px 12px; border-radius:999px; }
   .status-paid { background:rgba(16, 185, 129, 0.1); color:var(--accent-emerald); }
   .status-draft { background:var(--bg-subtle); color:var(--text-muted); }
+
+  .act-badge { font-size:0.68rem; font-weight:600; padding:3px 8px; border-radius:6px; background:var(--bg-subtle); border:1px solid var(--border-color); display:inline-flex; align-items:center; gap:4px; margin:2px; }
+  .act-badge.active { background:rgba(91, 132, 177, 0.12); color:var(--accent-rose); border-color:rgba(91, 132, 177, 0.3); }
 
   .tpl-manage-grid { display:grid; grid-template-columns:1fr; gap:24px; }
   @media(min-width:800px){ .tpl-manage-grid { grid-template-columns:1fr 2fr; } }
@@ -447,6 +450,8 @@ const state = {
   adminTab: "dashboard",
   massGuests: [],
   massTemplate: "",
+  manualGuestName: "",
+  manualGuestPhone: ""
 };
 
 // preview-only ephemeral UI state
@@ -458,6 +463,14 @@ let draftTemplate = null;
 
 function getActiveInvite(){ return state.invitations.find(i=>i.id===state.activeInviteId); }
 function getActiveTpl(){ return state.templates.find(t=>t.id===state.activeTplId); }
+
+function logActivity(inv, action){
+  if(!inv.activityLog) inv.activityLog = [];
+  inv.activityLog.unshift({
+    action,
+    at: new Date().toLocaleTimeString("id-ID", { hour: '2-digit', minute: '2-digit' })
+  });
+}
 
 function showToast(msg){
   const el = document.getElementById("toast");
@@ -517,7 +530,9 @@ function startFromTemplate(tplId){
     status: "draft",
     price: tpl.price,
     history: [{ category: tpl.category, templateName: tpl.name, at: new Date().toISOString() }],
+    activityLog: []
   };
+  logActivity(inv, `Membuat draft undangan format ${tpl.category}`);
   state.invitations.push(inv);
   state.activeInviteId = inv.id;
   state.activeTplId = tpl.id;
@@ -532,6 +547,7 @@ function reuseInvite(tplId){
   invite.templateId = tpl.id;
   invite.content = emptyContent(tpl);
   invite.history.push({ category: tpl.category, templateName: tpl.name, at: new Date().toISOString() });
+  logActivity(invite, `Mengubah penggunaan untuk acara ${tpl.category}`);
   state.activeTplId = tpl.id;
   state.reuseMode = false;
   resetPreviewState();
@@ -560,6 +576,7 @@ function onCategoryChange(newCat){
   const preset = FORMAT_PRESETS[newCat] || FORMAT_PRESETS["Pernikahan"];
   inv.content.eventTitle = preset.eventTitle;
   inv.content.quote = preset.quote;
+  logActivity(inv, `Mengubah format acara menjadi ${newCat}`);
   render();
 }
 
@@ -583,6 +600,7 @@ function handlePhotoUpload(input){
       remaining--;
       if(remaining===0){
         input.value = "";
+        logActivity(inv, `Mengunggah foto (${inv.content.photos.length} foto)`);
         renderPhotoThumbs();
         renderPreviewOnly();
       }
@@ -616,6 +634,7 @@ function renderPhotoThumbs(){
 function addExtraEvent(){
   const inv = getActiveInvite();
   inv.content.extraEvents.push({ id: slugify(), title: "", date: "", time: "", venueName: "", venueAddress: "", mapsQuery: "" });
+  logActivity(inv, `Menambahkan sesi/rangkaian acara baru`);
   renderExtraEventsList();
   renderPreviewOnly();
 }
@@ -675,6 +694,7 @@ function confirmPayment(){
   inv.status = "paid";
   inv.paidAt = new Date().toISOString();
   inv.payMethod = state.payMethod;
+  logActivity(inv, `Pembayaran berhasil via ${state.payMethod.toUpperCase()}`);
   goto("success");
 }
 
@@ -1001,13 +1021,20 @@ function renderPhonePreview(c){
       </div>`;
   }).join("");
 
+  const handleRsvpSubmit = () => {
+    previewState.rsvpSent = true;
+    const inv = getActiveInvite();
+    if(inv) logActivity(inv, `Tamu (${previewState.rsvpName || 'Tamu'}) telah mengisi RSVP`);
+    renderPreviewOnly();
+  };
+
   const rsvpHtml = previewState.rsvpSent
     ? `<p class="rsvp-thanks" style="color:${c.primary}">Terima kasih ${esc(previewState.rsvpName || "Tamu")}, konfirmasi Anda tersimpan.</p>`
     : `<div class="rsvp-form animate-on-scroll">
         <input class="in" placeholder="Nama lengkap" value="${esc(previewState.rsvpName)}" oninput="previewState.rsvpName=this.value">
         <select class="in"><option>1 Orang</option><option>2 Orang</option></select>
         <select class="in"><option>Ya, Saya Akan Hadir</option><option>Maaf, Tidak Bisa Hadir</option></select>
-        <button class="btn btn-block" style="background:${c.primary};color:#fff" onclick="previewState.rsvpSent=true; renderPreviewOnly()"><i class="fa-solid fa-paper-plane"></i> Kirim Konfirmasi</button>
+        <button class="btn btn-block" style="background:${c.primary};color:#fff" onclick="previewState.rsvpSent=true; const inv=getActiveInvite(); if(inv) logActivity(inv, 'Konfirmasi RSVP terisi'); renderPreviewOnly()"><i class="fa-solid fa-paper-plane"></i> Kirim Konfirmasi</button>
       </div>`;
 
   const giftHtml = c.bankAccountNumber ? `
@@ -1180,7 +1207,7 @@ function renderSuccess(){
       <span>${link}</span>
       <button onclick="copyText('${link}','Tautan disalin')"><i class="fa-regular fa-copy"></i></button>
     </div>
-    <a href="https://wa.me/?text=${waText}" target="_blank" class="btn btn-emerald btn-block" style="margin-bottom:12px"><i class="fa-brands fa-whatsapp"></i> Bagikan ke WhatsApp</a>
+    <a href="https://wa.me/?text=${waText}" target="_blank" class="btn btn-emerald btn-block" style="margin-bottom:12px" onclick="logActivity(getActiveInvite(), 'Membagikan tautan via WhatsApp')"><i class="fa-brands fa-whatsapp"></i> Bagikan ke WhatsApp</a>
     <button class="btn btn-outline btn-block" onclick="goto('myInvites')">Lihat Undangan Saya</button>
   </div>`;
 }
@@ -1207,7 +1234,7 @@ function renderMyInvites(){
           <button class="btn btn-outline btn-sm" onclick="openInvite('${inv.id}')">Edit</button>
           ${inv.status==='paid' ? `
             <button class="btn btn-emerald btn-sm" onclick="state.activeInviteId='${inv.id}'; state.reuseMode=true; goto('gallery')"><i class="fa-solid fa-arrows-rotate"></i> Pakai Acara Lain</button>
-            <button class="btn btn-dark btn-sm" onclick="openMassSend('${inv.id}')"><i class="fa-solid fa-file-import"></i> Kirim Massal</button>
+            <button class="btn btn-dark btn-sm" onclick="openMassSend('${inv.id}')"><i class="fa-solid fa-users"></i> Kelola & Kirim Tamu</button>
           ` : ""}
         </div>
       </div>`;
@@ -1215,7 +1242,7 @@ function renderMyInvites(){
   </div>`;
 }
 
-/* =============== KIRIM UNDANGAN MASSAL =============== */
+/* =============== KIRIM UNDANGAN MASSAL & MANUAL TAMU =============== */
 
 function defaultMassTemplate(){
   return "Halo {nama} \uD83D\uDC4B,\nAnda diundang ke acara kami. Silakan lihat undangan digital kami di Gerbang Sida:\n{link}\n\nMohon konfirmasi kehadiran Anda ya. Terima kasih \uD83D\uDE4F";
@@ -1223,8 +1250,11 @@ function defaultMassTemplate(){
 
 function openMassSend(id){
   state.activeInviteId = id;
-  state.massGuests = [];
-  state.massTemplate = defaultMassTemplate();
+  state.massGuests = state.massGuests || [];
+  state.massTemplate = state.massTemplate || defaultMassTemplate();
+  state.manualGuestName = "";
+  state.manualGuestPhone = "";
+  logActivity(getActiveInvite(), "Membuka modul Kelola & Kirim Undangan Tamu");
   goto("massSend");
 }
 
@@ -1235,6 +1265,52 @@ function normalizePhone(raw){
   if(p.startsWith("0")) p = "62" + p.slice(1);
   else if(!p.startsWith("62")) p = "62" + p;
   return p;
+}
+
+function addManualGuest(e){
+  e.preventDefault();
+  const nama = state.manualGuestName.trim();
+  const phoneRaw = state.manualGuestPhone.trim();
+  if(!nama){
+    showToast("Nama tamu wajib diisi!");
+    return;
+  }
+  const phone = normalizePhone(phoneRaw);
+  state.massGuests.push({
+    id: slugify(),
+    nama,
+    phone,
+    sent: false
+  });
+  state.manualGuestName = "";
+  state.manualGuestPhone = "";
+  logActivity(getActiveInvite(), `Menambahkan tamu manual: ${nama}`);
+  showToast(`Tamu ${nama} berhasil ditambahkan`);
+  renderMassTableOnly();
+}
+
+function removeGuest(index){
+  const removed = state.massGuests.splice(index, 1);
+  if(removed.length > 0){
+    logActivity(getActiveInvite(), `Menghapus tamu: ${removed[0].nama}`);
+    showToast(`Tamu ${removed[0].nama} dihapus`);
+  }
+  renderMassTableOnly();
+}
+
+function toggleGuestSent(index, status){
+  if(state.massGuests[index]){
+    state.massGuests[index].sent = status;
+    const actionText = status ? "dikirim" : "belum dikirim";
+    logActivity(getActiveInvite(), `Mengubah status pesan ${state.massGuests[index].nama} menjadi ${actionText}`);
+    showToast(`Status pengiriman ${state.massGuests[index].nama} diperbarui`);
+    renderMassTableOnly();
+  }
+}
+
+function sendWaAndMarkSent(index, waLink){
+  toggleGuestSent(index, true);
+  window.open(waLink, '_blank');
 }
 
 function rowsToGuests(rows){
@@ -1263,7 +1339,7 @@ function rowsToGuests(rows){
     }
     nama = nama.replace(/^\d+[\.\)]\s*/, "").trim();
     if(!nama) continue;
-    guests.push({ nama, phone: normalizePhone(telp) });
+    guests.push({ id: slugify(), nama, phone: normalizePhone(telp), sent: false });
   }
   return guests;
 }
@@ -1305,7 +1381,8 @@ function handleGuestFile(input){
       showToast("Tidak ada data tamu yang terbaca dari file ini");
       return;
     }
-    state.massGuests = guests;
+    state.massGuests = state.massGuests.concat(guests);
+    logActivity(getActiveInvite(), `Mengunggah daftar ${guests.length} tamu Excel/CSV`);
     renderMassTableOnly();
     showToast(`${guests.length} tamu berhasil diimport`);
   };
@@ -1344,27 +1421,41 @@ function renderMassTableOnly(){
 function renderMassTable(){
   const inv = getActiveInvite();
   if(state.massGuests.length === 0){
-    return `<p class="empty-note">Belum ada data tamu. Upload file di atas untuk mulai.</p>`;
+    return `<p class="empty-note">Belum ada data tamu. Tambahkan tamu secara manual di atas atau upload file Excel/CSV.</p>`;
   }
   const terdeteksi = state.massGuests.filter(g=>g.phone).length;
+  const dikirim = state.massGuests.filter(g=>g.sent).length;
   return `
-  <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:12px"><b>${state.massGuests.length}</b> tamu terimport • <b>${terdeteksi}</b> nomor WhatsApp terdeteksi</p>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+    <p style="font-size:0.8rem;color:var(--text-secondary)">
+      <b>${state.massGuests.length}</b> Tamu • <b>${terdeteksi}</b> WhatsApp Terdeteksi • <b>${dikirim}/${state.massGuests.length}</b> Pesan Terkirim
+    </p>
+  </div>
   <div class="card" style="padding:0;overflow:hidden">
     <table>
-      <thead><tr><th>#</th><th>Nama</th><th>No. WhatsApp</th><th>Tautan Personal</th><th>Aksi</th></tr></thead>
+      <thead><tr><th>#</th><th>Nama Tamu</th><th>No. WhatsApp</th><th>Status Pesan</th><th>Aksi Kirim</th></tr></thead>
       <tbody>
         ${state.massGuests.map((g,i)=>{
           const { link, message } = buildMassMessage(inv, g);
           const waLink = g.phone ? `https://wa.me/${g.phone}?text=${encodeURIComponent(message)}` : "";
+          const isSent = !!g.sent;
           return `<tr>
             <td>${i+1}</td>
-            <td>${esc(g.nama)}</td>
+            <td><b>${esc(g.nama)}</b></td>
             <td>${g.phone ? esc(g.phone) : `<span style="color:#ef4444;font-size:0.75rem">tidak terdeteksi</span>`}</td>
-            <td style="max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.75rem;color:var(--text-secondary)">${esc(link)}</td>
             <td>
-              <div style="display:flex;gap:6px">
-                ${g.phone ? `<a class="btn btn-emerald btn-sm" href="${waLink}" target="_blank" rel="noreferrer"><i class="fa-brands fa-whatsapp"></i> Kirim</a>` : ""}
+              ${isSent 
+                ? `<span class="status-pill status-paid"><i class="fa-solid fa-check-double"></i> Terkirim</span>` 
+                : `<span class="status-pill status-draft"><i class="fa-regular fa-clock"></i> Belum Dikirim</span>`}
+            </td>
+            <td>
+              <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                ${g.phone ? `<button class="btn btn-emerald btn-sm" onclick="sendWaAndMarkSent(${i}, '${waLink}')"><i class="fa-brands fa-whatsapp"></i> Kirim</button>` : ""}
                 <button class="btn btn-outline btn-sm" onclick="copyMassMessage(${i})" title="Salin pesan"><i class="fa-regular fa-copy"></i></button>
+                <button class="btn btn-outline btn-sm" onclick="toggleGuestSent(${i}, ${!isSent})" title="${isSent?'Tandai belum dikirim':'Tandai sudah dikirim'}">
+                  <i class="fa-solid ${isSent ? 'fa-xmark' : 'fa-check'}"></i>
+                </button>
+                <button class="btn btn-outline btn-sm" style="color:#ef4444;border-color:#fca5a5" onclick="removeGuest(${i})" title="Hapus Tamu"><i class="fa-solid fa-trash"></i></button>
               </div>
             </td>
           </tr>`;
@@ -1380,29 +1471,46 @@ function renderMassSend(){
   return `
   <div class="container page">
     <button class="btn-link" onclick="goto('myInvites')"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
-    <h2 class="cursive" style="font-size:2.2rem;margin-bottom:4px;">Kirim Undangan Massal</h2>
+    <h2 class="cursive" style="font-size:2.2rem;margin-bottom:4px;">Kelola & Kirim Undangan Tamu</h2>
     <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:24px;">${esc(inv.content.mainNames) || inv.slug} — ${link}</p>
 
-    <div class="card" style="margin-bottom:20px">
-      <p class="section-title"><i class="fa-solid fa-file-import"></i> Upload Daftar Tamu</p>
-      <label class="field"><span>File Excel (.xlsx / .xls), CSV, atau TXT</span>
-        <input type="file" accept=".xlsx,.xls,.csv,.txt" class="in" onchange="handleGuestFile(this)">
-      </label>
-      <p style="font-size:0.75rem;color:var(--text-muted)">
-        Kolom yang dikenali: <b>Nama</b> dan <b>No. WhatsApp</b> (contoh: 08123456789). Header otomatis dilewati.
-      </p>
+    <div class="grid-2" style="margin-bottom:20px">
+      <!-- FORM TAMBAH TAMU MANUAL -->
+      <div class="card">
+        <p class="section-title"><i class="fa-solid fa-user-plus"></i> Tambah Tamu Manual</p>
+        <form onsubmit="addManualGuest(event)">
+          <label class="field"><span>Nama Tamu / Penerima</span>
+            <input class="in" placeholder="Contoh: Bpk. Ahmad & Keluarga" value="${esc(state.manualGuestName)}" oninput="state.manualGuestName=this.value" required>
+          </label>
+          <label class="field"><span>No. WhatsApp (Opsional)</span>
+            <input class="in" placeholder="Contoh: 08123456789" value="${esc(state.manualGuestPhone)}" oninput="state.manualGuestPhone=this.value">
+          </label>
+          <button type="submit" class="btn btn-rose btn-block"><i class="fa-solid fa-plus"></i> Tambahkan ke Daftar</button>
+        </form>
+      </div>
+
+      <!-- FORM UPLOAD EXCEL / CSV -->
+      <div class="card">
+        <p class="section-title"><i class="fa-solid fa-file-import"></i> Upload Excel / CSV Massal</p>
+        <label class="field"><span>File Excel (.xlsx / .xls), CSV, atau TXT</span>
+          <input type="file" accept=".xlsx,.xls,.csv,.txt" class="in" onchange="handleGuestFile(this)">
+        </label>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-top:8px">
+          Kolom yang dikenali otomatis: <b>Nama</b> dan <b>No. WhatsApp</b> (contoh: 08123456789).
+        </p>
+      </div>
     </div>
 
     <div class="card" style="margin-bottom:20px">
       <p class="section-title"><i class="fa-solid fa-message"></i> Template Pesan WhatsApp</p>
-      <textarea class="in" rows="5" oninput="updateMassTemplate(this.value)">${esc(state.massTemplate)}</textarea>
+      <textarea class="in" rows="4" oninput="updateMassTemplate(this.value)">${esc(state.massTemplate)}</textarea>
       <p style="font-size:0.75rem;color:var(--text-muted);margin-top:6px">Gunakan <code>{nama}</code> untuk nama tamu dan <code>{link}</code> untuk tautan undangan personal.</p>
     </div>
 
     <div id="mass-table-container">${renderMassTable()}</div>
 
     <div class="pay-note" style="margin-top:20px">
-      <i class="fa-solid fa-circle-info"></i> Pesan dikirim satu per satu via tombol <b>Kirim</b> untuk mencegah nomor terblokir akibat pengiriman massal otomatis.
+      <i class="fa-solid fa-circle-info"></i> Pesan dikirim satu per satu via tombol <b>Kirim</b> untuk menjaga keamanan akun WhatsApp dari blokir spam otomatis. Status pesan akan terbarui otomatis saat Anda menekan tombol Kirim.
     </div>
   </div>`;
 }
@@ -1453,11 +1561,13 @@ function renderAdmin(){
 
     <div class="tabs">
       <button class="tab-btn ${state.adminTab==='dashboard'?'active':''}" onclick="setAdminTab('dashboard')"><i class="fa-solid fa-chart-column"></i> Dashboard</button>
+      <button class="tab-btn ${state.adminTab==='clientActivity'?'active':''}" onclick="setAdminTab('clientActivity')"><i class="fa-solid fa-chart-line"></i> Aktivitas Klien</button>
       <button class="tab-btn ${state.adminTab==='transactions'?'active':''}" onclick="setAdminTab('transactions')"><i class="fa-solid fa-wallet"></i> Transaksi</button>
       <button class="tab-btn ${state.adminTab==='templates'?'active':''}" onclick="setAdminTab('templates')"><i class="fa-solid fa-table-cells-large"></i> Kelola Template</button>
     </div>
 
     ${state.adminTab==='dashboard' ? renderAdminDashboard(paid, revenue) : ""}
+    ${state.adminTab==='clientActivity' ? renderAdminClientActivity() : ""}
     ${state.adminTab==='transactions' ? renderAdminTransactions() : ""}
     ${state.adminTab==='templates' ? renderAdminTemplates() : ""}
   </div>`;
@@ -1486,6 +1596,60 @@ function renderAdminDashboard(paid, revenue){
           <span class="blbl">${b.cat}</span>
         </div>`).join("")}
     </div>
+  </div>`;
+}
+
+/* TAB BARU: AKTIVITAS KLIEN REAL-TIME */
+function renderAdminClientActivity(){
+  return `
+  <div class="card" style="padding:0;overflow:hidden">
+    <table>
+      <thead>
+        <tr>
+          <th>Klien / Judul Acara</th>
+          <th>Format Acara</th>
+          <th>Fitur / Aktivitas Diaktifkan</th>
+          <th>Riwayat Reuse</th>
+          <th>Aktivitas Terakhir</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${state.invitations.map(inv=>{
+          const c = inv.content;
+          const hasPhotos = c.photos && c.photos.length > 0;
+          const hasGift = !!c.bankAccountNumber;
+          const hasMusic = !!c.music;
+          const hasExtra = c.extraEvents && c.extraEvents.length > 0;
+          const historyCount = inv.history ? inv.history.length : 1;
+          const latestLog = (inv.activityLog && inv.activityLog.length > 0) 
+            ? `${inv.activityLog[0].action} (${inv.activityLog[0].at})`
+            : "Draft dibuka";
+
+          return `<tr>
+            <td>
+              <b>${esc(c.mainNames) || "(Belum ada nama)"}</b><br>
+              <span style="font-size:0.75rem;color:var(--text-muted)">ID: ${inv.id} • ${inv.status==='paid'?'<span style="color:var(--accent-emerald)">Lunas</span>':'Draft'}</span>
+            </td>
+            <td>
+              <span class="act-badge active"><i class="fa-solid fa-tag"></i> ${esc(c.categoryType || "Pernikahan")}</span>
+            </td>
+            <td>
+              <span class="act-badge ${hasPhotos?'active':''}"><i class="fa-solid fa-image"></i> ${c.photos.length} Foto</span>
+              <span class="act-badge ${hasGift?'active':''}"><i class="fa-solid fa-gift"></i> Amplop</span>
+              <span class="act-badge ${hasMusic?'active':''}"><i class="fa-solid fa-music"></i> Lagu</span>
+              <span class="act-badge ${hasExtra?'active':''}"><i class="fa-solid fa-layer-group"></i> Sesi Tambahan</span>
+            </td>
+            <td>
+              <span style="font-size:0.8rem;font-weight:600">${historyCount}x Pakai</span>
+            </td>
+            <td style="font-size:0.75rem;color:var(--text-secondary)">
+              <i class="fa-solid fa-clock-rotate-left" style="color:var(--accent-rose)"></i> ${esc(latestLog)}
+            </td>
+          </tr>`;
+        }).join("")}
+        ${state.invitations.length===0 ? `<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:32px">Belum ada aktivitas klien terdeteksi. Silakan coba buat atau edit undangan di mode Customer.</td></tr>` : ""}
+      </tbody>
+    </table>
   </div>`;
 }
 
@@ -1608,6 +1772,40 @@ function renderDraftBgImageThumb(){
     : "";
 }
 
+function publishTemplate(){
+  const nameEl = document.getElementById("new-tpl-name");
+  const priceEl = document.getElementById("new-tpl-price");
+  const name = nameEl ? nameEl.value.trim() : "";
+  const price = priceEl ? parseInt(priceEl.value) || 50000 : 50000;
+  if(!name){
+    showToast("Nama template wajib diisi!");
+    return;
+  }
+  const newTpl = {
+    id: slugify(),
+    name,
+    category: draftTemplate.category,
+    price,
+    primary: draftTemplate.primary,
+    secondary: draftTemplate.secondary,
+    bg: draftTemplate.bg,
+    bgImage: draftTemplate.bgImage,
+    font: draftTemplate.font,
+    layout: draftTemplate.layout,
+    photo: draftTemplate.photos[0] || null
+  };
+  state.templates.unshift(newTpl);
+  showToast("Template berhasil dipublikasikan!");
+  resetDraftTemplate();
+  render();
+}
+
+function deleteTemplate(id){
+  state.templates = state.templates.filter(t=>t.id!==id);
+  showToast("Template dihapus");
+  render();
+}
+
 function renderAdminTemplates(){
   ensureDraftTemplate();
   const d = draftTemplate;
@@ -1693,51 +1891,21 @@ function renderAdminTemplates(){
         <div class="tpl-mini">
           <div class="tpl-mini-cover" style="${coverStyle}"><span class="cursive" style="color:${nameColor}">${esc(t.name)}</span></div>
           <div class="tpl-mini-info">
-            <div><p style="font-size:0.75rem;color:var(--text-muted)">${t.category}</p><p style="font-size:0.85rem;font-weight:700">${rupiah(t.price)}</p></div>
-            <button onclick="removeTemplate('${t.id}')"><i class="fa-solid fa-trash"></i></button>
+            <div><b>${esc(t.name)}</b><br><span style="font-size:0.75rem;color:var(--text-muted)">${t.category} • ${rupiah(t.price)}</span></div>
+            <button onclick="deleteTemplate('${t.id}')" title="Hapus Template"><i class="fa-solid fa-trash"></i></button>
           </div>
         </div>`;
     }).join("")}
   </div>`;
 }
 
-function publishTemplate(){
-  const name = document.getElementById("new-tpl-name").value.trim();
-  if(!name){ showToast("Nama template wajib diisi"); return; }
-  const price = Number(document.getElementById("new-tpl-price").value) || 0;
-  const tpl = {
-    id: slugify(),
-    name,
-    category: draftTemplate.category,
-    price,
-    primary: draftTemplate.primary,
-    secondary: draftTemplate.secondary,
-    bg: draftTemplate.bg,
-    bgImage: draftTemplate.bgImage || null,
-    font: draftTemplate.font,
-    layout: draftTemplate.layout,
-    photo: draftTemplate.photos[0] || null,
-  };
-  state.templates.push(tpl);
-  showToast("Template berhasil dipublikasikan ke katalog customer");
-  resetDraftTemplate();
-  render();
-}
-
-function removeTemplate(id){
-  state.templates = state.templates.filter(t=>t.id!==id);
-  render();
-}
-
 function bindAdminExtras(){
-  if(state.adminTab === "templates") {
-    renderDraftPhotoThumb();
-    renderDraftBgImageThumb();
-    bindPhoneScrollAnimation();
-  }
+  renderDraftPhotoThumb();
+  renderDraftBgImageThumb();
 }
 
 /* =============== INIT =============== */
+
 render();
 </script>
 </body>
